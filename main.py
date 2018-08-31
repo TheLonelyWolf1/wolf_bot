@@ -40,7 +40,7 @@ async def ban(ctx, member : discord.Member):
         print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Bann-Command executed! By:', banner, '| Banned:', member)
         await bot.say(embed=discord.Embed(color=discord.Color.dark_red(), description="Applause! Da wurde soeben jemand gebannt!", ))
 
-        
+
 @bot.command(pass_context=True)
 async def ping(ctx,):
     # Ping Command
@@ -54,13 +54,13 @@ async def commands(ctx,):
     # Commands Command
     executer = ctx.message.author
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Commands-Command executed! By:', executer)
-    await bot.say( embed=discord.Embed(color=discord.Color.dark_orange(), description="*<command> | This are my Commands:"))
-    await bot.say("ping | Gives you PONG")
-    await bot.say("info | Information about the division")
-    await bot.say("kick | Kicks a Member (Use @User)")
-    await bot.say("ban | Bans a Member (Use @User)")
-    await bot.say("commands | shows my commands")
-
+    emb=discord.Embed(color=discord.Color.dark_orange(), description="*<command> | This are my Commands:")
+    emb.add_field(name="ping:", value="Gives you PONG")
+    emb.add_field(name="info:", value="Information about the division")
+    emb.add_field(name="kick:", value=" Kicks a Member (Use @User)")
+    emb.add_field(name="ban:", value="Bans a Member (Use @User)")
+    emb.add_field(name="commands:", value="shows my commands")
+    await bot.say(embed=emb)
 
 
 @bot.command(pass_context=True)
@@ -72,5 +72,5 @@ async def info(ctx,):
     embed.add_field(name="Owner:", value="TheLonelyWolf")
     embed.add_field(name="Gründungsdatum:", value="__***Die 218.Gaming Division wurde am 20. Juni 2018 von TheLonelyWolf gegründet!***__")
     await bot.say(embed=embed)
-bot.run(SECRETS.TOKEN)
 
+bot.run(SECRETS.TOKEN)

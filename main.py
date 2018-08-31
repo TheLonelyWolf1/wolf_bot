@@ -40,7 +40,7 @@ async def ban(ctx, member : discord.Member):
         print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Bann-Command executed! By:', banner, '| Banned:', member)
         await bot.say(embed=discord.Embed(color=discord.Color.dark_red(), description="Applause! Da wurde soeben jemand gebannt!", ))
 
-
+        
 @bot.command(pass_context=True)
 async def ping(ctx,):
     # Ping Command

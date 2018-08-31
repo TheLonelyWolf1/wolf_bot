@@ -50,6 +50,20 @@ async def ping(ctx,):
 
 
 @bot.command(pass_context=True)
+async def commands(ctx,):
+    # Commands Command
+    executer = ctx.message.author
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Commands-Command executed! By:', executer)
+    await bot.say( embed=discord.Embed(color=discord.Color.dark_orange(), description="*<command> | This are my Commands:"))
+    await bot.say("ping | Gives you PONG")
+    await bot.say("info | Information about the division")
+    await bot.say("kick | Kicks a Member (Use @User)")
+    await bot.say("ban | Bans a Member (Use @User)")
+    await bot.say("commands | shows my commands")
+
+
+
+@bot.command(pass_context=True)
 async def info(ctx,):
     # Info Command
     executer = ctx.message.author
@@ -59,3 +73,4 @@ async def info(ctx,):
     embed.add_field(name="Gründungsdatum:", value="__***Die 218.Gaming Division wurde am 20. Juni 2018 von TheLonelyWolf gegründet!***__")
     await bot.say(embed=embed)
 bot.run(SECRETS.TOKEN)
+

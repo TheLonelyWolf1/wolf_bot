@@ -54,13 +54,23 @@ async def commands(ctx,):
     # Commands Command
     executer = ctx.message.author
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Commands-Command executed! By:', executer)
-    emb=discord.Embed(color=discord.Color.dark_orange(), description="*<command> | This are my Commands:")
-    emb.add_field(name="ping:", value="Gives you PONG")
-    emb.add_field(name="info:", value="Information about the division")
-    emb.add_field(name="kick:", value=" Kicks a Member")
-    emb.add_field(name="ban:", value="Bans a Member")
-    emb.add_field(name="commands:", value="shows my commands")
+    emb=discord.Embed(color=discord.Color.dark_orange(), description="Meine Befehle:")
+    emb.add_field(name="ping:", value="PONG")
+    emb.add_field(name="info:", value="Info über die 218.")
+    emb.add_field(name="kick:", value=" Kickt ein User")
+    emb.add_field(name="ban:", value="Bannt ein User")
+    emb.add_field(name="creator:", value="Mein Erschaffer")
+    emb.add_field(name="commands:", value="Meine Befehle")
+    emb.set_footer(text="Missbraucht sie ja nicht!")
     await bot.say(embed=emb)
+
+
+@bot.command(pass_context=True)
+async def creator(ctx,):
+    # Creator Command
+    executer = ctx.message.author
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Creator-Command executed! By:', executer)
+    await bot.say(embed=discord.Embed(color=discord.Color.dark_blue(), description="Mein Erschaffer ist TheLonelyWolf!"))
 
 
 @bot.command(pass_context=True)

@@ -57,8 +57,8 @@ async def commands(ctx,):
     emb=discord.Embed(color=discord.Color.dark_orange(), description="*<command> | This are my Commands:")
     emb.add_field(name="ping:", value="Gives you PONG")
     emb.add_field(name="info:", value="Information about the division")
-    emb.add_field(name="kick:", value=" Kicks a Member (Use @User)")
-    emb.add_field(name="ban:", value="Bans a Member (Use @User)")
+    emb.add_field(name="kick:", value=" Kicks a Member")
+    emb.add_field(name="ban:", value="Bans a Member")
     emb.add_field(name="commands:", value="shows my commands")
     await bot.say(embed=emb)
 

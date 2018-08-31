@@ -1,7 +1,10 @@
+import threading
+
 import discord
 import discord.ext
 from discord.ext import commands
 import datetime
+import asyncio
 
 import SECRETS
 import STATICS
@@ -9,6 +12,9 @@ import STATICS
 
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
 bot_version = "0.1.0"
+
+
+
 
 @bot.event
 async def on_ready():
@@ -19,7 +25,23 @@ async def on_ready():
     print("Discord Version: " + discord.__version__)
     print("Datum: " + datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S"))
     print("------------------------------------")
+    bot.loop.create_task(status_task())
 
+
+async def status_task():
+    while True:
+        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), "RP-Cycle is working!")
+        await bot.change_presence(game=discord.Game(name='Wolf.exe | Prefix *'))
+        await asyncio.sleep(20)
+        await bot.change_presence(game=discord.Game(name='Fighting my demons!'))
+        await asyncio.sleep(20)
+        await bot.change_presence(game=discord.Game(name='Playing GOD!'))
+        await asyncio.sleep(20)
+        await bot.change_presence(game=discord.Game(name='Killing Fox.exe!'))
+        await asyncio.sleep(20)
+        await bot.change_presence(game=discord.Game(name='Fox.exe stopped working!'))
+        await asyncio.sleep(20)
+        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), "Restarting RP-Cycle...")
 
 @bot.command(pass_context=True)
 @commands.has_permissions(kick_members=True)

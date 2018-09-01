@@ -55,7 +55,6 @@ async def kick(ctx, member : discord.Member):
 
 
 @bot.command()
-@commands.has_permissions(mention_everyone=True)
 @commands.bot_has_permissions(mention_everyone=True)
 async def say(*, content):
     await bot.say(content)

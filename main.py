@@ -66,8 +66,8 @@ async def say(*, content):
 async def wolfbot(ctx):
     executor = ctx.message.author
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Wolfbot-Command executed! By:', executor)
-    emb = discord.Embed(color=discord.Color.dark_orange(), description="Wolf-Bot:")
-    emb.add_field(name="Name:", value="Wolf Bot")
+    emb = discord.Embed(color=discord.Color.dark_orange(), description=bot.user.name)
+    emb.add_field(name="Name:", value=bot.user.name)
     emb.add_field(name="Version:", value=bot_version)
     emb.add_field(name="Developer:", value="TheLonelyWolf")
     emb.add_field(name="Mein Zweck:", value="Ich passe auf, dass es keine Anarchy gibt")

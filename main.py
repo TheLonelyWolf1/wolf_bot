@@ -43,6 +43,7 @@ async def status_task():
         await asyncio.sleep(20)
         print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), "Restarting RP-Cycle...")
 
+
 @bot.command(pass_context=True)
 @commands.has_permissions(kick_members=True)
 @commands.bot_has_permissions(kick_members=True)
@@ -53,10 +54,45 @@ async def kick(ctx, member : discord.Member):
         await bot.say(embed=discord.Embed(color=discord.Color.dark_red(), description="Applause! Da wurde soeben jemand gekickt!", ))
 
 
+@bot.command()
+@commands.has_permissions(mention_everyone=True)
+@commands.bot_has_permissions(mention_everyone=True)
+async def say(ctx):
+    await bot.say(ctx)
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Say-Command executed!')
+
+
+@bot.command(pass_context=True)
+async def wolfbot(ctx):
+    executor = ctx.message.author
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Wolfbot-Command executed! By:', executor)
+    emb = discord.Embed(color=discord.Color.dark_orange(), description="Wolf-Bot:")
+    emb.add_field(name="Name:", value="Wolf Bot")
+    emb.add_field(name="Version:", value=bot_version)
+    emb.add_field(name="Developer:", value="TheLonelyWolf")
+    emb.add_field(name="Mein Zweck:", value="Ich passe auf, dass es keine Anarchy gibt")
+    emb.set_footer(text="Discord-Version: " + discord.__version__)
+    await bot.say(embed=emb)
+
+
+@commands.has_permissions(manage_messages=True)
+@commands.bot_has_permissions(manage_messages=True)
+@bot.command(pass_context=True)
+async def vanish(ctx, number):
+    mgs = []  # Empty list to put all the messages in the log
+    number = int(number)  # Converting the amount of messages to delete to an integer
+    number2 = number + 1
+    async for x in bot.logs_from(ctx.message.channel, limit=number2):
+        mgs.append(x)
+    await bot.delete_messages(mgs)
+    executer = ctx.message.author
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Vanish-Command executed! By:', executer)
+
+
 @bot.command(pass_context=True)
 @commands.has_permissions(ban_members=True)
 @commands.bot_has_permissions(ban_members=True)
-async def ban(ctx, member : discord.Member):
+async def ban(ctx, member: discord.Member):
         await bot.ban(member)
         banner = ctx.message.author
         print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Bann-Command executed! By:', banner, '| Banned:', member)
@@ -81,18 +117,12 @@ async def commands(ctx,):
     emb.add_field(name="info:", value="Info über die 218.")
     emb.add_field(name="kick:", value=" Kickt ein User")
     emb.add_field(name="ban:", value="Bannt ein User")
-    emb.add_field(name="creator:", value="Mein Erschaffer")
+    emb.add_field(name="wolfbot:", value="Info über mich")
     emb.add_field(name="commands:", value="Meine Befehle")
+    emb.add_field(name="say:", value="Sende dein Text")
+    emb.add_field(name="vanish:", value="Lösche Nachricht(en)")
     emb.set_footer(text="Missbraucht sie ja nicht!")
     await bot.say(embed=emb)
-
-
-@bot.command(pass_context=True)
-async def creator(ctx,):
-    # Creator Command
-    executer = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Creator-Command executed! By:', executer)
-    await bot.say(embed=discord.Embed(color=discord.Color.dark_blue(), description="Mein Erschaffer ist TheLonelyWolf!"))
 
 
 @bot.command(pass_context=True)

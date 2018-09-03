@@ -134,4 +134,7 @@ async def info(ctx,):
     embed.add_field(name="Gründungsdatum:", value="__***Die 218.Gaming Division wurde am 20. Juni 2018 von TheLonelyWolf gegründet!***__")
     await bot.say(embed=embed)
 
-bot.run(SECRETS.TOKEN)
+from boto.s3.connection import S3Connection
+s3 = S3Connection(os.environ['TOKEN'])
+
+bot.run(s3)

@@ -14,6 +14,7 @@ import SECRETS
 import STATICS
 from boto.s3.connection import S3Connection
 
+tokken = tooookkkeeennn
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
 bot_version = "0.1.2"
 killResponses = ("%s ist aus Versehen in die Lave geschupst worden. UPS",
@@ -134,6 +135,7 @@ async def wolfbot(ctx):
     emb.set_footer(text="Discord-Version: " + discord.__version__)
     await bot.say(embed=emb)
 
+tokenn = tokken   
 # ------------------------------
 # Vanish Command
 # ------------------------------
@@ -250,7 +252,7 @@ async def addsmod(ctx, *, member: discord.Member = None):
 # ------------------------------
 # ------------------------------
 
-
+token = tokenn
 @commands.has_permissions(manage_roles=True)
 @commands.bot_has_permissions(manage_roles=True)
 @bot.command(pass_context=True)
@@ -476,6 +478,7 @@ async def kick(ctx, member: discord.Member = None):
 # Ban Command
 # ------------------------------
 # ------------------------------
+tooookkkeeennn = (SECRETS.TOKEN)
 
 
 @bot.command(pass_context=True)
@@ -546,6 +549,4 @@ async def info(ctx,):
     embed.add_field(name="Owner:", value="TheLonelyWolf")
     embed.add_field(name="Gründungsdatum:", value="__***Die 218.Gaming Division wurde am 20. Juni 2018 von TheLonelyWolf gegründet!***__")
     await bot.say(embed=embed)
-
-s3 = S3Connection(os.environ['414141244441'], os.environ['wolf313122'])
-bot.run(s3)
+bot.run(token)

@@ -5,6 +5,7 @@ import discord.ext
 from discord.ext import commands
 import datetime
 import asyncio
+from boto.s3.connection import S3Connection
 
 import SECRETS
 import STATICS

@@ -1,4 +1,3 @@
-import os
 import discord
 import discord.ext
 from discord.ext import commands
@@ -7,6 +6,7 @@ import asyncio
 import random
 import traceback
 
+import token
 import STATICS
 
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
@@ -541,5 +541,5 @@ async def info(ctx,):
     embed.add_field(name="Owner:", value="TheLonelyWolf")
     embed.add_field(name="Gründungsdatum:", value="__***Die 218.Gaming Division wurde am 20. Juni 2018 von TheLonelyWolf gegründet!***__")
     await bot.say(embed=embed)
-token = os.environ['TOKEN']
+token = token.token
 bot.run(token)

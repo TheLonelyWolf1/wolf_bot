@@ -7,8 +7,6 @@ import asyncio
 import random
 import traceback
 
-from pip._internal.utils import logging
-
 import SECRETS
 import STATICS
 print(os.environ['HOME'])

@@ -226,8 +226,6 @@ async def commands(ctx,):
     emb.add_field(name="say:", value="Sende dein Text")
     emb.add_field(name="vanish:", value="Lösche Nachricht(en)")
     emb.add_field(name="kill:", value="Wenn soll ich töten?")
-    emb.add_field(name="add(s)mod,(s)admin:", value="Füge Leute dem Team zu")
-    emb.add_field(name="remove(s)mod,(s)admin:", value="Entferne Leute vom Team")
     emb.set_footer(text="Missbraucht sie ja nicht!")
     await bot.say(embed=emb)
 

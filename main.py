@@ -9,7 +9,7 @@ import traceback
 
 import SECRETS
 import STATICS
-print(os.environ['HOME'])
+print(os.environ['TOKEN'])
 tokken = tooookkkeeennn
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
 bot_version = "0.1.2"
@@ -21,7 +21,7 @@ killResponses = ("%s ist aus Versehen in die Lave geschupst worden. UPS",
                  "Habe %s 's Kopf weggerissen und in Mülleimer geworfen.",
                  "%s findet sein Gehirn nichtmehr. *Psst! Ich habs zerschrettert, sag es aber niemanden*",
                  "Sorry %s, aber ich musste dich leider erschießen.")
-
+tooookkkeeennn = os.environ['TOKEN']
 # ------------------------------
 # On_Ready Output
 # ------------------------------

@@ -7,7 +7,6 @@ import asyncio
 import random
 import traceback
 
-import SECRETS
 import STATICS
 print(os.environ['TOKEN'])
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")

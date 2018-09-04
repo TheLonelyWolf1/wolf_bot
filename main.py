@@ -1,5 +1,3 @@
-import os
-
 import discord
 import discord.ext
 from discord.ext import commands
@@ -12,7 +10,6 @@ from pip._internal.utils import logging
 
 import SECRETS
 import STATICS
-from boto.s3.connection import S3Connection
 
 tokken = tooookkkeeennn
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")

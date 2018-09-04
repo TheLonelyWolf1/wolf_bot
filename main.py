@@ -8,7 +8,7 @@ import random
 import traceback
 
 import STATICS
-print(os.environ['TOKEN'])
+
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
 bot_version = "0.1.2"
 killResponses = ("%s ist aus Versehen in die Lave geschupst worden. UPS",

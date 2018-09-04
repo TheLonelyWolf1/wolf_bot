@@ -1,3 +1,4 @@
+import os
 import discord
 import discord.ext
 from discord.ext import commands
@@ -10,7 +11,7 @@ from pip._internal.utils import logging
 
 import SECRETS
 import STATICS
-
+print(os.environ['HOME'])
 tokken = tooookkkeeennn
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
 bot_version = "0.1.2"

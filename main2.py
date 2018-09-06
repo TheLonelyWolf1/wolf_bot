@@ -6,7 +6,6 @@ import datetime
 import asyncio
 import random
 
-import SECRETS
 import STATICS2
 
 bot = commands.Bot(command_prefix=STATICS2.PREFIX, description=" ")
@@ -559,5 +558,5 @@ async def info(ctx,):
     embed.add_field(name="Owner:", value="TheLonelyWolf")
     embed.add_field(name="Gründungsdatum:", value="__***Die 218.Gaming Division wurde am 20. Juni 2018 von TheLonelyWolf gegründet!***__")
     await bot.say(embed=embed)
-token = SECRETS.TOKEN # os.environ.get("TOKEN")
+token = os.environ.get("TOKEN")
 bot.run(token)

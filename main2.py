@@ -558,5 +558,5 @@ async def info(ctx,):
     embed.add_field(name="Owner:", value="TheLonelyWolf")
     embed.add_field(name="Gründungsdatum:", value="__***Die 218.Gaming Division wurde am 20. Juni 2018 von TheLonelyWolf gegründet!***__")
     await bot.say(embed=embed)
-token = os.environ.get("TOKEN")
+token = os.environ.get("TOKEN2")
 bot.run(token)

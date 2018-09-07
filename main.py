@@ -7,7 +7,6 @@ import asyncio
 import random
 import traceback
 
-import SECRETS
 import STATICS
 
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
@@ -168,305 +167,6 @@ async def vanish(ctx, number):
 
 
 # ------------------------------
-# Add Trainee Command
-# ------------------------------
-# ------------------------------
-
-
-@commands.has_permissions(manage_roles=True)
-@commands.bot_has_permissions(manage_roles=True)
-@bot.command(pass_context=True)
-async def addtrainee(ctx, *, member: discord.Member = None):
-    user = member
-    role = discord.utils.get(user.server.roles, name="≗Trainee")
-    executer = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'AddTrainee-Command executed! By:', executer)
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), role, ' : ', user)
-    role_names = [role.name for role in member.roles]
-    if member is None:
-        await bot.say(ctx.message.author.mention + ": Ich kann das VOID nicht töten!")
-        return
-    if member.mention == ctx.message.author.mention:
-        await bot.say(ctx.message.author.mention + ": Bitte lass dich von jemanden anderen ernennen!")
-    elif "≗Trainee" in role_names:
-        await bot.say(member.mention + " besitzt schon das Amt eines Trainees!")
-        return
-    else:
-        await bot.add_roles(user, role)
-        await bot.say(member.mention + " ist nun ein ***Trainee*** | Willkommen im Team!")
-
-
-# ------------------------------
-# Add Mod Command
-# ------------------------------
-# ------------------------------
-
-
-@commands.has_permissions(manage_roles=True)
-@commands.bot_has_permissions(manage_roles=True)
-@bot.command(pass_context=True)
-async def addmod(ctx, *, member: discord.Member = None):
-    user = member
-    role = discord.utils.get(user.server.roles, name="≘Moderators")
-    delrole = discord.utils.get(user.server.roles, name="≗Trainee")
-    executer = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'AddMod-Command executed! By:', executer)
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), role, ' : ', user)
-    role_names = [role.name for role in member.roles]
-    if member is None:
-        await bot.say(ctx.message.author.mention + ": Ich kann das VOID nicht töten!")
-        return
-    if member.mention == ctx.message.author.mention:
-        await bot.say(ctx.message.author.mention + ": Bitte lass dich von jemanden anderen ernennen!")
-    elif "≘Moderators" in role_names:
-        await bot.say(member.mention + " besitzt schon das Amt eines Moderators!")
-        return
-    else:
-        await bot.add_roles(user, role)
-        await bot.say(member.mention + " ist nun ein ***Moderator*** | Willkommen im Team!")
-        if "≗Trainee" in role_names:
-            await bot.remove_roles(user, delrole)
-            print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), member, "'s Trainee-Role entfernt!")
-        else:
-            print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), member, "hat kein Trainee Rang gehabt")
-
-
-# ------------------------------
-# Add SteamMod Command
-# ------------------------------
-# ------------------------------
-
-
-@commands.has_permissions(manage_roles=True)
-@commands.bot_has_permissions(manage_roles=True)
-@bot.command(pass_context=True)
-async def addsmod(ctx, *, member: discord.Member = None):
-    user = member
-    role = discord.utils.get(user.server.roles, name="Steam-Mods")
-    executer = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Addsmod-Command executed! By:', executer)
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), role, ' : ', user)
-    role_names = [role.name for role in member.roles]
-    if member is None:
-        await bot.say(ctx.message.author.mention + ": Ich kann das VOID nicht töten!")
-        return
-    if member.mention == ctx.message.author.mention:
-        await bot.say(ctx.message.author.mention + ": Bitte lass dich von jemanden anderen ernennen!")
-    elif "≗Trainee" in role_names:
-        await bot.say(member.mention + " besitzt schon das Amt eines Steam-Mod!")
-        return
-    else:
-        await bot.add_roles(user, role)
-        await bot.say(member.mention + " ist nun ein ***Steam-Mod*** | Willkommen im Team!")
-
-
-# ------------------------------
-# Add Admin Command
-# ------------------------------
-# ------------------------------
-
-
-@commands.has_permissions(manage_roles=True)
-@commands.bot_has_permissions(manage_roles=True)
-@bot.command(pass_context=True)
-async def addadmin(ctx, *, member: discord.Member = None):
-    user = member
-    role = discord.utils.get(user.server.roles, name="≜Administrators")
-    delrole = discord.utils.get(user.server.roles, name="≘Moderators")
-    executer = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Addadmin-Command executed! By:', executer)
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), role, ' : ', user)
-    role_names = [role.name for role in member.roles]
-    if member is None:
-        await bot.say(ctx.message.author.mention + ": Ich kann das VOID nicht töten!")
-        return
-    if member.mention == ctx.message.author.mention:
-        await bot.say(ctx.message.author.mention + ": Bitte lass dich von jemanden anderen ernennen!")
-    elif "≜Administrators" in role_names:
-        await bot.say(member.mention + " besitzt schon das Amt eines Administrators!")
-        return
-    else:
-        await bot.add_roles(user, role)
-        await bot.say(member.mention + " ist nun ein ***Administrator*** | Willkommen im Team!")
-        if "≘Moderators" in role_names:
-            await bot.remove_roles(user, delrole)
-            print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), member, "'s Mod-Role entfernt!")
-        else:
-            print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), member, "hat kein Mod Rang gehabt")
-
-
-@commands.has_permissions(manage_roles=True)
-@commands.bot_has_permissions(manage_roles=True)
-@bot.command(pass_context=True)
-async def addsadmin(ctx, *, member: discord.Member = None):
-    user = member
-    role = discord.utils.get(user.server.roles, name="Steam-Admins")
-    delrole = discord.utils.get(user.server.roles, name="Steam-Mods")
-    executer = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Addsadmin-Command executed! By:', executer)
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), role, ' : ', user)
-    role_names = [role.name for role in member.roles]
-    if member is None:
-        await bot.say(ctx.message.author.mention + ": Ich kann das VOID nicht töten!")
-        return
-    if member.mention == ctx.message.author.mention:
-        await bot.say(ctx.message.author.mention + ": Bitte lass dich von jemanden anderen ernennen!")
-    elif "≗Trainee" in role_names:
-        await bot.say(member.mention + " besitzt schon das Amt eines Steam-Admin!")
-        return
-    else:
-        await bot.add_roles(user, role)
-        await bot.say(member.mention + " ist nun ein ***Steam-Admin*** | Willkommen im Team!")
-        if "Steam-Mods" in role_names:
-            await bot.remove_roles(user, delrole)
-            print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), member, "'s SteamMod-Role entfernt!")
-        else:
-            print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), member, "hat kein SteamMod Rang gehabt")
-
-
-# ------------------------------
-# Remove Mod Command
-# ------------------------------
-# ------------------------------
-
-
-@commands.has_permissions(manage_roles=True)
-@commands.bot_has_permissions(manage_roles=True)
-@bot.command(pass_context=True)
-async def rmod(ctx, *, member: discord.Member = None):
-    user = member
-    role = discord.utils.get(user.server.roles, name="≘Moderators")
-    executer = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'RemoveMod-Command executed! By:', executer)
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), role, ' : ', user)
-    role_names = [role.name for role in member.roles]
-    if member is None:
-        await bot.say(ctx.message.author.mention + ": Ich kann das VOID nicht töten!")
-        return
-    if member.mention == ctx.message.author.mention:
-        await bot.say(ctx.message.author.mention + ": Bitte lass dich von jemanden anderen ernennen!")
-    elif "≘Moderators" in role_names:
-        await bot.remove_roles(user, role)
-        await bot.say(member.mention + " ist nun kein Moderator mehr!")
-        return
-    else:
-        await bot.add_roles(user, role)
-        await bot.say(member.mention + " hat dieses Amt nicht!")
-
-
-# ------------------------------
-# Remove SMod Command
-# ------------------------------
-# ------------------------------
-
-
-@commands.has_permissions(manage_roles=True)
-@commands.bot_has_permissions(manage_roles=True)
-@bot.command(pass_context=True)
-async def rsmod(ctx, *, member: discord.Member = None):
-    user = member
-    role = discord.utils.get(user.server.roles, name="Steam-Mods")
-    executer = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'RemoveMod-Command executed! By:', executer)
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), role, ' : ', user)
-    role_names = [role.name for role in member.roles]
-    if member is None:
-        await bot.say(ctx.message.author.mention + ": Ich kann das VOID nicht töten!")
-        return
-    if member.mention == ctx.message.author.mention:
-        await bot.say(ctx.message.author.mention + ": Bitte lass dich von jemanden anderen ernennen!")
-    elif "Steam-Mods" in role_names:
-        await bot.remove_roles(user, role)
-        await bot.say(member.mention + " ist nun kein Steam-Moderator mehr!")
-        return
-    else:
-        await bot.add_roles(user, role)
-        await bot.say(member.mention + " hat dieses Amt nicht!")
-
-
-# ------------------------------
-# Remove Admin Command
-# ------------------------------
-# ------------------------------
-
-
-@commands.has_permissions(manage_roles=True)
-@commands.bot_has_permissions(manage_roles=True)
-@bot.command(pass_context=True)
-async def radmin(ctx, *, member: discord.Member = None):
-    user = member
-    role = discord.utils.get(user.server.roles, name="≜Administrators")
-    executer = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Removeadmin-Command executed! By:', executer)
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), role, ' : ', user)
-    role_names = [role.name for role in member.roles]
-    if member is None:
-        await bot.say(ctx.message.author.mention + ": Ich kann das VOID nicht töten!")
-        return
-    if member.mention == ctx.message.author.mention:
-        await bot.say(ctx.message.author.mention + ": Bitte lass dich von jemanden anderen ernennen!")
-    elif "≜Administrators" in role_names:
-        await bot.remove_roles(user, role)
-        await bot.say(member.mention + " ist nun kein Administrator mehr!")
-        return
-    else:
-        await bot.say(member.mention + " hat dieses Amt nicht!")
-
-
-@commands.has_permissions(manage_roles=True)
-@commands.bot_has_permissions(manage_roles=True)
-@bot.command(pass_context=True)
-async def rsadmin(ctx, *, member: discord.Member = None):
-    user = member
-    role = discord.utils.get(user.server.roles, name="Steam-Admins")
-    executer = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Removeadmin-Command executed! By:', executer)
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), role, ' : ', user)
-    role_names = [role.name for role in member.roles]
-    if member is None:
-        await bot.say(ctx.message.author.mention + ": Ich kann das VOID nicht töten!")
-        return
-    if member.mention == ctx.message.author.mention:
-        await bot.say(ctx.message.author.mention + ": Bitte lass dich von jemanden anderen ernennen!")
-    elif "Steam-Admins" in role_names:
-        await bot.remove_roles(user, role)
-        await bot.say(member.mention + " ist nun kein Steam-Administrator mehr!")
-        return
-    else:
-        await bot.say(member.mention + " hat dieses Amt nicht!")
-
-
-# ------------------------------
-# Remove Trainee Command
-# ------------------------------
-# ------------------------------
-
-
-@commands.has_permissions(manage_roles=True)
-@commands.bot_has_permissions(manage_roles=True)
-@bot.command(pass_context=True)
-async def rtrainee(ctx, *, member: discord.Member = None):
-    user = member
-    role = discord.utils.get(user.server.roles, name="≗Trainee")
-    executer = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'RemoveTrainee-Command executed! By:', executer)
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), role, ' : ', user)
-    role_names = [role.name for role in member.roles]
-    if member is None:
-        await bot.say(ctx.message.author.mention + ": Ich kann das VOID nicht töten!")
-        return
-    if member.mention == ctx.message.author.mention:
-        await bot.say(ctx.message.author.mention + ": Bitte lass dich von jemanden anderen ernennen!")
-    elif "≗Trainee" in role_names:
-        await bot.remove_roles(user, role)
-        await bot.say(member.mention + " ist nun kein Administrator mehr!")
-        return
-    else:
-        await bot.add_roles(user, role)
-        await bot.say(member.mention + " hat dieses Amt nicht!")
-
-
-# ------------------------------
 # Kick Command
 # ------------------------------
 # ------------------------------
@@ -494,6 +194,7 @@ async def kick(ctx, member: discord.Member = None):
 async def kick_error(ctx, error):
     await bot.say('User nicht gefunden :bangbang:')
 
+    
 # ------------------------------
 # Ban Command
 # ------------------------------
@@ -522,6 +223,8 @@ async def ban(ctx, member: discord.Member = None):
 @ban.error
 async def ban_error(ctx, error):
     await bot.say('User nicht gefunden :bangbang:')
+    
+    
 # ------------------------------
 # Ping Command
 # ------------------------------
@@ -547,7 +250,7 @@ async def commands(ctx, ):
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Commands-Command executed! By:', executer)
     emb = discord.Embed(color=discord.Color.dark_orange(), description="Meine Befehle:")
     emb.add_field(name="ping:", value="PONG")
-    emb.add_field(name="info:", value="Info über die 218.")
+    emb.add_field(name="divisioninfo:", value="Info über die 218.")
     emb.add_field(name="kick:", value=" Kickt ein User")
     emb.add_field(name="ban:", value="Bannt ein User")
     emb.add_field(name="wolfbot:", value="Info über mich")
@@ -555,8 +258,6 @@ async def commands(ctx, ):
     emb.add_field(name="say:", value="Sende dein Text")
     emb.add_field(name="vanish:", value="Lösche Nachricht(en)")
     emb.add_field(name="kill:", value="Wenn soll ich töten?")
-    emb.add_field(name="add(s)mod,(s)admin:", value="Füge Leute dem Team zu")
-    emb.add_field(name="remove(s)mod,(s)admin:", value="Entferne Leute vom Team")
     emb.set_footer(text="Missbraucht sie ja nicht!")
     await bot.say(embed=emb)
 
@@ -568,7 +269,7 @@ async def commands(ctx, ):
 
 
 @bot.command(pass_context=True)
-async def info(ctx, ):
+async def divisioninfo(ctx, ):
     executer = ctx.message.author
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Info-Command executed! By:', executer)
     embed = discord.Embed(title="Division Information", color=discord.Color.dark_green(),
@@ -578,7 +279,5 @@ async def info(ctx, ):
                     value="__***Die 218.Gaming Division wurde am 20. Juni 2018 von TheLonelyWolf gegründet!***__")
     await bot.say(embed=embed)
 
-
-token = SECRETS.TOKEN
-# für Heroku App!!!! os.environ.get("TOKEN")
+token = os.environ.get("TOKEN")
 bot.run(token)

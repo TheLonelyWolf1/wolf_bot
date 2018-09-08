@@ -6,11 +6,20 @@ import datetime
 import asyncio
 import random
 import traceback
+import time
 
+import SECRETS
 import STATICS
 
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
-bot_version = "0.1.2"
+bot_version = "0.1.4"
+
+# ------------------------------
+# Responses
+# ------------------------------
+# ------------------------------
+
+
 killResponses = ("%s ist aus Versehen in die Lave geschupst worden. UPS",
                  "%s ist auf ein Wolf gestoßen, danach hörte man nichts mehr von ihm.",
                  "Ich habe %s mal um die Ecke gebracht, kam alleine zurück.",
@@ -20,6 +29,32 @@ killResponses = ("%s ist aus Versehen in die Lave geschupst worden. UPS",
                  "%s findet sein Gehirn nichtmehr. *Psst! Ich habs zerschrettert, sag es aber niemanden*",
                  "Sorry %s, aber ich musste dich leider erschießen.")
 
+yodaResponses = ("Schlafen du jetzt musst, sonst du morgen müde sein wirst.",
+                 "Unmöglich zu sehen, die Zukunft ist.",
+                 "Groß machen Kriege niemand.",
+                 "Furcht der Pfad zur dunklen Seite ist.",
+                 "Eure Sinne ihr nutzen müsst.",
+                 "Die Macht stark in dir ist.",
+                 "Grammatik ich von Yoda gelernt haben.",
+                 "Viel zu lernen du noch hast, mein junger Padawan.",
+                 "Tue es oder tue es nicht! Versuchen es nicht gibt.",
+                 "Die macht nur zur Verteidigung benutzen du darfst. Niemals zum Angriff!",
+                 "Dich lebend zu sehen mich erfreut, %s",
+                 "Der Tod ein natürlicher Bestandteil des Lebens ist.",
+                 "Ins Exil ich muss, versagt ich haben.",
+                 "Feigling du bist, wenn du folgen der dunklen Seite.",
+                 "Kleine Truppe wir sind, dafür größer im Geist.",
+                 "Deine Wahrnehmung deine Realität bestimmen wird.",
+                 "Geburtstag du hast! Alter Sack du jetzt bist.",
+                 "Müde ich bin, Kaffee ich jetzt brauch.",
+                 "Montag! Schrecklich er ist.",
+                 "Schnauze halten du musst, bis ich Kaffee fertig getrunken habe.",
+                 "Möge das Wetter mit deuch sein.",
+                 "Yodafone - Der Internetanbieter für Jedis",
+                 "Kaffee du bringen mir musst, sonst töten ich dich werde.",
+                 "Die dunkle Seite stärker als Chuck Norris ist.",
+                 "Auf dein Herz hören du musst, um zu erfüllen deine Träume.",
+                 "Du nicht grundlos töten darfst!")
 
 # ------------------------------
 # On_Ready Output
@@ -32,7 +67,7 @@ async def on_ready():
     print("------------Eingeloggt--------------")
     print("Bot Name: " + bot.user.name)
     print("Bot ID: " + bot.user.id)
-    print("BOT Version: " + bot_version)
+    print("Bot Version: " + bot_version)
     print("Discord Version: " + discord.__version__)
     print("Datum: " + datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S"))
     servers = list(bot.servers)
@@ -111,7 +146,21 @@ async def kill(ctx, *, member: discord.Member = None):
         await bot.say("Du kannst auch Selbstmord betreiben. Dann mach ich mir die Hände nicht schmutzig!")
     else:
         choice = killResponses[random.randrange(0, len(killResponses))] % member.mention
-        await bot.say(ctx.message.author.mention + ": " + choice)
+        await bot.say(choice)
+
+
+# ------------------------------
+# Yoda Command
+# ------------------------------
+# ------------------------------
+
+
+@bot.command(pass_context=True)
+async def yoda(ctx, *, member: discord.Member = None):
+    executor = ctx.message.author
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Yoda-Command executed! By:', executor)
+    choice = yodaResponses[random.randrange(0, len(yodaResponses))]
+    await bot.say(embed=discord.Embed(color=discord.Color.dark_green(), description=choice))
 
 
 # ------------------------------
@@ -194,7 +243,6 @@ async def kick(ctx, member: discord.Member = None):
 async def kick_error(ctx, error):
     await bot.say('User nicht gefunden :bangbang:')
 
-    
 # ------------------------------
 # Ban Command
 # ------------------------------
@@ -223,8 +271,7 @@ async def ban(ctx, member: discord.Member = None):
 @ban.error
 async def ban_error(ctx, error):
     await bot.say('User nicht gefunden :bangbang:')
-    
-    
+
 # ------------------------------
 # Ping Command
 # ------------------------------
@@ -232,11 +279,14 @@ async def ban_error(ctx, error):
 
 
 @bot.command(pass_context=True)
-async def ping(ctx, ):
+async def ping(ctx):
     executer = ctx.message.author
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Ping-Command executed! By:', executer)
-    await bot.say(embed=discord.Embed(color=discord.Color.dark_blue(), description="PONG!"))
-
+    before = time.monotonic()
+    await bot.delete_message(ctx.message)
+    ping = (time.monotonic() - before) * 1000
+    await bot.say(content=f"Bot läuft bei: `{int(ping)}ms`")
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), f'Ping {int(ping)}ms')
 
 # ------------------------------
 # Commands Command
@@ -249,8 +299,8 @@ async def commands(ctx, ):
     executer = ctx.message.author
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Commands-Command executed! By:', executer)
     emb = discord.Embed(color=discord.Color.dark_orange(), description="Meine Befehle:")
-    emb.add_field(name="ping:", value="PONG")
-    emb.add_field(name="divisioninfo:", value="Info über die 218.")
+    emb.add_field(name="ping:", value="Ping des Bots")
+    emb.add_field(name="info:", value="Info über die 218.")
     emb.add_field(name="kick:", value=" Kickt ein User")
     emb.add_field(name="ban:", value="Bannt ein User")
     emb.add_field(name="wolfbot:", value="Info über mich")
@@ -258,8 +308,18 @@ async def commands(ctx, ):
     emb.add_field(name="say:", value="Sende dein Text")
     emb.add_field(name="vanish:", value="Lösche Nachricht(en)")
     emb.add_field(name="kill:", value="Wenn soll ich töten?")
+    emb.add_field(name="yoda:", value="Yoda-Weisheiten")
+    emb.add_field(name="servers:", value="Wieviel Server benutzen mich")
     emb.set_footer(text="Missbraucht sie ja nicht!")
     await bot.say(embed=emb)
+
+
+@bot.command(pass_context=True)
+async def servers(ctx):
+    executer = ctx.message.author
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Servers-Command executed! By:', executer)
+    servers = list(bot.servers)
+    await bot.say("[" + str(len(bot.servers)) + "] Server nutzen mich aktuell!")
 
 
 # ------------------------------
@@ -269,7 +329,7 @@ async def commands(ctx, ):
 
 
 @bot.command(pass_context=True)
-async def divisioninfo(ctx, ):
+async def info(ctx, ):
     executer = ctx.message.author
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Info-Command executed! By:', executer)
     embed = discord.Embed(title="Division Information", color=discord.Color.dark_green(),
@@ -279,5 +339,7 @@ async def divisioninfo(ctx, ):
                     value="__***Die 218.Gaming Division wurde am 20. Juni 2018 von TheLonelyWolf gegründet!***__")
     await bot.say(embed=embed)
 
-token = os.environ.get("TOKEN")
+
+token = SECRETS.TOKEN
+# für Heroku App!!!! os.environ.get("TOKEN")
 bot.run(token)

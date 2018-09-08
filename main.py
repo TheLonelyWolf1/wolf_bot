@@ -8,7 +8,6 @@ import random
 import traceback
 import time
 
-import SECRETS
 import STATICS
 
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
@@ -340,6 +339,5 @@ async def info(ctx, ):
     await bot.say(embed=embed)
 
 
-token = SECRETS.TOKEN
-# für Heroku App!!!! os.environ.get("TOKEN")
+token = os.environ.get("TOKEN")
 bot.run(token)

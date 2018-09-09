@@ -67,14 +67,14 @@ def load_opus_lib():
 
     for opus_lib in opus_libs:
         try:
-            opus.load_opus(opus)
+            opus.load_opus('opus')
             return
         except OSError:
             pass
 
 
 if not discord.opus.is_loaded():
-  discord.opus.load_opus(opus)
+  discord.opus.load_opus('opus')
 
 @bot.event
 async def on_ready():

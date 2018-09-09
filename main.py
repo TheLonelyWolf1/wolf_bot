@@ -7,7 +7,7 @@ import asyncio
 import random
 import traceback
 import time
-from discord import opus
+import sys
 import STATICS
 
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
@@ -76,6 +76,7 @@ async def on_ready():
         print('  ' + servers[x - 1].name)
     print("------------------------------------")
     bot.loop.create_task(status_task())
+    print(sys.platform)
 
 
 # ------------------------------
@@ -83,9 +84,6 @@ async def on_ready():
 # ------------------------------
 # ------------------------------
 
-
-if not discord.opus.is_loaded():
-   discord.opus.load_opus()
 
 class VoiceEntry:
     def __init__(self, message, player):

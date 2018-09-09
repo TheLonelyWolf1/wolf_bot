@@ -8,7 +8,7 @@ import random
 import traceback
 import time
 import sys
-import libopus.so.1
+import opuslib
 import STATICS
 
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")

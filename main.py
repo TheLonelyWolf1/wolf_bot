@@ -62,7 +62,6 @@ yodaResponses = ("Schlafen du jetzt musst, sonst du morgen müde sein wirst.",
 # ------------------------------
 # ------------------------------
 
-
 if not discord.opus.is_loaded():
   discord.opus.load_opus(name)
 
@@ -81,6 +80,8 @@ async def on_ready():
     print("------------------------------------")
     bot.loop.create_task(status_task())
     print(sys.platform)
+    library = find_library(o)
+    print(library)
 
 
 # ------------------------------

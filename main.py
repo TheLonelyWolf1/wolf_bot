@@ -15,6 +15,8 @@ from ctypes.util import find_library
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
 bot_version = "0.1.6"
 
+discord.opus.load_opus
+
 players = {}
 # ------------------------------
 # Responses
@@ -78,8 +80,6 @@ async def on_ready():
     print("------------------------------------")
     bot.loop.create_task(status_task())
     print(sys.platform)
-    library = find_library(libopus0)
-    print(library)
 
 
 # ------------------------------

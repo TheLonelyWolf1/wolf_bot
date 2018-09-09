@@ -84,9 +84,20 @@ async def on_ready():
 # Youtube Music Bot
 # ------------------------------
 # ------------------------------
+OPUS_LIBS = ['libopus-0.x86.dll', 'libopus-0.x64.dll', 'libopus-0.dll', 'libopus.so.0', 'libopus.0.dylib']
 
-if not discord.opus.is_loaded():
-discord.opus.load_opus('opuslib')
+
+def load_opus_lib(opus_libs=OPUS_LIBS):
+    if opus.is_loaded():
+        return True
+
+    for opus_lib in opus_libs:
+        try:
+            opus.load_opus(opus_lib)
+            return
+        except OSError:
+            pass
+
 
 class VoiceEntry:
     def __init__(self, message, player):

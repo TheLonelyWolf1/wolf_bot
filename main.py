@@ -85,6 +85,8 @@ async def on_ready():
 # ------------------------------
 # ------------------------------
 
+if not discord.opus.is_loaded():
+discord.opus.load_opus('opuslib')
 
 class VoiceEntry:
     def __init__(self, message, player):

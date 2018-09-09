@@ -61,7 +61,20 @@ yodaResponses = ("Schlafen du jetzt musst, sonst du morgen müde sein wirst.",
 # On_Ready Output
 # ------------------------------
 # ------------------------------
+def load_opus_lib():
+    if opus.is_loaded():
+        return True
 
+    for opus_lib in opus_libs:
+        try:
+            opus.load_opus(opus_lib)
+            return
+        except OSError:
+            pass
+
+
+if not discord.opus.is_loaded():
+discord.opus.load_opus()
 
 @bot.event
 async def on_ready():
@@ -603,5 +616,3 @@ async def info(ctx, ):
 
 token = os.environ.get("TOKEN")
 bot.run(token)
-if not discord.opus.is_loaded():
-    discord.opus.load_opus()

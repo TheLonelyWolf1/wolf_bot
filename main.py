@@ -77,6 +77,7 @@ async def on_ready():
         print('  ' + servers[x - 1].name)
     print("------------------------------------")
     bot.loop.create_task(status_task())
+    discord.opus.load_opus
     print(sys.platform)
 
 
@@ -85,8 +86,6 @@ async def on_ready():
 # ------------------------------
 # ------------------------------
 
-if not discord.opus.is_loaded():
-  discord.opus.load_opus('opus')
 
 class VoiceEntry:
     def __init__(self, message, player):

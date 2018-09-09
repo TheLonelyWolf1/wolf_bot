@@ -2,5 +2,6 @@ build-essential -y
 unzip -y
 software-properties-common -y
 libopus-dev -y
+libopus0 -y
 libffi-dev -y
 libsodium-dev -y

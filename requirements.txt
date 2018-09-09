@@ -3,4 +3,3 @@ PyNaCl
 discord.py[voice]
 opuslib
 ffmpeg
-opus

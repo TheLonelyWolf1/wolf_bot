@@ -78,7 +78,7 @@ async def on_ready():
     print("------------------------------------")
     bot.loop.create_task(status_task())
     print(sys.platform)
-    library = find_library(libopus0_1.1.2)
+    library = find_library(libopus0)
     print(library)
 
 

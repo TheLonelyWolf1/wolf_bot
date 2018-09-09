@@ -11,7 +11,7 @@ import time
 import STATICS
 
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
-bot_version = "0.1.4"
+bot_version = "0.1.6"
 
 players = {}
 # ------------------------------
@@ -82,10 +82,6 @@ async def on_ready():
 # Youtube Music Bot
 # ------------------------------
 # ------------------------------
-
-
-if not discord.opus.is_loaded():
-    discord.opus.load_opus('opus')
 
 
 class VoiceEntry:

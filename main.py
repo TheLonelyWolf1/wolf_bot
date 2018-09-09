@@ -8,7 +8,7 @@ import random
 import traceback
 import time
 import sys
-import opuslib
+from discord import opus
 import STATICS
 
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")

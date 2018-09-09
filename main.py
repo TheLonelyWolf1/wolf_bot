@@ -13,6 +13,7 @@ import STATICS
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
 bot_version = "0.1.4"
 
+players = {}
 # ------------------------------
 # Responses
 # ------------------------------
@@ -48,7 +49,7 @@ yodaResponses = ("Schlafen du jetzt musst, sonst du morgen müde sein wirst.",
                  "Müde ich bin, Kaffee ich jetzt brauch.",
                  "Montag! Schrecklich er ist.",
                  "Schnauze halten du musst, bis ich Kaffee fertig getrunken habe.",
-                 "Möge das Wetter mit euch sein.",
+                 "Möge das Wetter mit deuch sein.",
                  "Yodafone - Der Internetanbieter für Jedis",
                  "Kaffee du bringen mir musst, sonst töten ich dich werde.",
                  "Die dunkle Seite stärker als Chuck Norris ist.",
@@ -75,6 +76,243 @@ async def on_ready():
         print('  ' + servers[x - 1].name)
     print("------------------------------------")
     bot.loop.create_task(status_task())
+
+
+# ------------------------------
+# Youtube Music Bot
+# ------------------------------
+# ------------------------------
+
+
+if not discord.opus.is_loaded():
+    discord.opus.load_opus('opus')
+
+
+class VoiceEntry:
+    def __init__(self, message, player):
+        self.requester = message.author
+        self.channel = message.channel
+        self.player = player
+
+    def __str__(self):
+        fmt = '**{0.title}** | *{1.display_name}*'
+        duration = self.player.duration
+        if duration:
+            fmt = fmt + ' [{0[0]}m {0[1]}s]'.format(divmod(duration, 60))
+        return fmt.format(self.player, self.requester)
+
+
+class VoiceState:
+    def __init__(self, bot):
+        self.current = None
+        self.voice = None
+        self.bot = bot
+        self.play_next_song = asyncio.Event()
+        self.songs = asyncio.Queue()
+        self.skip_votes = set()  # a set of user_ids that voted
+        self.audio_player = self.bot.loop.create_task(self.audio_player_task())
+
+    def is_playing(self):
+        if self.voice is None or self.current is None:
+            return False
+
+        player = self.current.player
+        return not player.is_done()
+
+    @property
+    def player(self):
+        return self.current.player
+
+    def skip(self):
+        self.skip_votes.clear()
+        if self.is_playing():
+            self.player.stop()
+
+    def toggle_next(self):
+        self.bot.loop.call_soon_threadsafe(self.play_next_song.set)
+
+    async def audio_player_task(self):
+        emb = discord.Embed(color=discord.Color.dark_orange(), description="Musik Bot")
+        while True:
+            self.play_next_song.clear()
+            self.current = await self.songs.get()
+            await self.bot.send_message(self.current.channel, '**Spiele jetzt:** ' + str(self.current))
+            self.current.player.start()
+            await self.play_next_song.wait()
+
+
+class Music:
+    """Voice related commands.
+    Works in multiple servers at once.
+    """
+    def __init__(self, bot):
+        self.bot = bot
+        self.voice_states = {}
+
+    def get_voice_state(self, server):
+        state = self.voice_states.get(server.id)
+        if state is None:
+            state = VoiceState(self.bot)
+            self.voice_states[server.id] = state
+
+        return state
+
+    async def create_voice_client(self, channel):
+        voice = await self.bot.join_voice_channel(channel)
+        state = self.get_voice_state(channel.server)
+        state.voice = voice
+
+    def __unload(self):
+        for state in self.voice_states.values():
+            try:
+                state.audio_player.cancel()
+                if state.voice:
+                    self.bot.loop.create_task(state.voice.disconnect())
+            except:
+                pass
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def summon(self, ctx):
+        executer = ctx.message.author
+        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Summon-Command executed! By:', executer)
+        summoned_channel = ctx.message.author.voice_channel
+        if summoned_channel is None:
+            await self.bot.say('Du bist nicht in einem Sprach-Kanal.')
+            return False
+
+        state = self.get_voice_state(ctx.message.server)
+        if state.voice is None:
+            state.voice = await self.bot.join_voice_channel(summoned_channel)
+        else:
+            await state.voice.move_to(summoned_channel)
+
+        return True
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def play(self, ctx, *, song: str):
+        executer = ctx.message.author
+        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Play-Command executed! By:', executer)
+        state = self.get_voice_state(ctx.message.server)
+        opts = {
+            'default_search': 'auto',
+            'quiet': True,
+        }
+        emb = discord.Embed(color=discord.Color.dark_orange(), description="Musik Bot")
+        if state.voice is None:
+            success = await ctx.invoke(self.summon)
+            if not success:
+                return
+
+        try:
+            player = await state.voice.create_ytdl_player(song, ytdl_options=opts, after=state.toggle_next)
+        except Exception as e:
+            fmt = 'Ein Fehler ist aufgetreten: ```py\n{}: {}\n```'
+            await self.bot.send_message(ctx.message.channel, fmt.format(type(e).__name__, e))
+        else:
+            player.volume = 0.6
+            entry = VoiceEntry(ctx.message, player)
+            emb.add_field(name="In die Warteschlange aufgenommen:", value=str(entry))
+            emb.set_footer(text="Wolf-Bot | " + bot_version)
+            await self.bot.say(embed=emb)
+            await state.songs.put(entry)
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def volume(self, ctx, value: int):
+        executer = ctx.message.author
+        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Volume-Command executed! By:', executer)
+        """Sets the volume of the currently playing song."""
+
+        state = self.get_voice_state(ctx.message.server)
+        if state.is_playing():
+            player = state.player
+            player.volume = value / 100
+            await self.bot.say('Lautstärke angepasst auf: {:.0%}'.format(player.volume))
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def pause(self, ctx):
+        executer = ctx.message.author
+        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Volume-Command executed! By:', executer)
+        """Pauses the currently played song."""
+        state = self.get_voice_state(ctx.message.server)
+        if state.is_playing():
+            player = state.player
+            player.pause()
+            await bot.say(embed=discord.Embed(color=discord.Color.dark_orange(), description="Pausiere Lied!"))
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def resume(self, ctx):
+        executer = ctx.message.author
+        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Resume-Command executed! By:', executer)
+        """Resumes the currently played song."""
+        state = self.get_voice_state(ctx.message.server)
+        if state.is_playing():
+            player = state.player
+            player.resume()
+            await bot.say(embed=discord.Embed(color=discord.Color.dark_orange(), description="Spiele weiter ab!"))
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def leave(self, ctx):
+        executer = ctx.message.author
+        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Leave-Command executed! By:', executer)
+        """Stops playing audio and leaves the voice channel.
+        This also clears the queue.
+        """
+        server = ctx.message.server
+        state = self.get_voice_state(server)
+
+        if state.is_playing():
+            player = state.player
+            player.stop()
+
+        try:
+            state.audio_player.cancel()
+            del self.voice_states[server.id]
+            await state.voice.disconnect()
+            await bot.say(embed=discord.Embed(color=discord.Color.dark_orange(), description="Disconnected!"))
+        except:
+            pass
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def skip(self, ctx):
+        executer = ctx.message.author
+        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'SkipVote-Command executed! By:', executer)
+
+        state = self.get_voice_state(ctx.message.server)
+        if not state.is_playing():
+            await self.bot.say('Spiel gerade keine Musik...')
+            return
+
+        voter = ctx.message.author
+        if voter == state.current.requester:
+            await self.bot.say('Requester lässt sein Lied skippen...')
+            state.skip()
+        elif voter.id not in state.skip_votes:
+            state.skip_votes.add(voter.id)
+            total_votes = len(state.skip_votes)
+            if total_votes >= 2:
+                await self.bot.say('Skip vote erfolgreich, skipping song...')
+                state.skip()
+            else:
+                await self.bot.say('Skip vote hinzugefügt: [{}/2]'.format(total_votes))
+        else:
+            await self.bot.say('Du hast schon für ein Skip dieses Liedes gestimmt.')
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def playing(self, ctx):
+        executer = ctx.message.author
+        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Playing-Command executed! By:', executer)
+        """Shows info about the currently played song."""
+
+        state = self.get_voice_state(ctx.message.server)
+        if state.current is None:
+            await self.bot.say('Kein Lied wird gerade abgespielt')
+        else:
+            skip_count = len(state.skip_votes)
+            await self.bot.say('Spiele gerade {} [skips: {}/2]'.format(state.current, skip_count))
+
+
+bot.add_cog(Music(bot))
+
 
 # ------------------------------
 # On_Message Output
@@ -309,8 +547,34 @@ async def commands(ctx, ):
     emb.add_field(name="kill:", value="Wenn soll ich töten?")
     emb.add_field(name="yoda:", value="Yoda-Weisheiten")
     emb.add_field(name="servers:", value="Wieviel Server benutzen mich")
+    emb.add_field(name="musicbot:", value="Meine Commands für den Musikbot")
     emb.set_footer(text="Missbraucht sie ja nicht!")
     await bot.say(embed=emb)
+# ------------------------------
+# MusicBot Command
+# ------------------------------
+# ------------------------------
+
+
+@bot.command(pass_context=True)
+async def musicbot(ctx, ):
+    executer = ctx.message.author
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Musicbot-Command executed! By:', executer)
+    emb = discord.Embed(color=discord.Color.dark_purple(), description="Meine Musik - Befehle:")
+    emb.add_field(name="join/summon:", value="Tritt dem Sprach-Kanal bei.")
+    emb.add_field(name="play:", value="Spielt einen Song.")
+    emb.add_field(name="volume:", value="Setzt die Lautstärke.")
+    emb.add_field(name="pause:", value="Pausiert einen Song.")
+    emb.add_field(name="resume:", value="Entpausiert einen Songs.")
+    emb.add_field(name="leave:", value="Beendet die Musik und verlässt den Kanal.")
+    emb.add_field(name="skip:", value="Startet einen Skip-Vote.")
+    emb.add_field(name="playing:", value="Zeigt das aktuell gespielte Lied")
+    emb.set_footer(text="Missbraucht sie ja nicht!")
+    await bot.say(embed=emb)
+# ------------------------------
+# Servers Command
+# ------------------------------
+# ------------------------------
 
 
 @bot.command(pass_context=True)

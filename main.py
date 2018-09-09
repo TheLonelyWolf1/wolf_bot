@@ -10,6 +10,7 @@ import time
 import sys
 from discord import opus
 import STATICS
+from ctypes.util import find_library
 
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
 bot_version = "0.1.6"

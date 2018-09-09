@@ -82,7 +82,7 @@ async def on_ready():
 
 
 if not discord.opus.is_loaded():
-  discord.opus.load_opus(libopus0_1.1.2-1ubuntu1_amd64.deb)
+  discord.opus.load_opus('libopus0_1.1.2-1ubuntu1_amd64.deb')
 # ------------------------------
 # Youtube Music Bot
 # ------------------------------

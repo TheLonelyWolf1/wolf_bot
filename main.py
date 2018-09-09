@@ -81,16 +81,11 @@ async def on_ready():
     print(sys.platform)
 
 
-def load_opus_lib():
-    if opus.is_loaded():
-        return True
-
-    for opus_lib in opus_libs:
-        try:
-            opus.load_opus(opus_lib)
-            return
-        except OSError:
-            pass
+    def load_opus(self):
+        opus_path = find_library('opus')
+        opus.load_opus(opus_path)
+        if not opus.is_loaded():
+        	print('Opus was not loaded')
 # ------------------------------
 # Youtube Music Bot
 # ------------------------------

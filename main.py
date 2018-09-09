@@ -62,9 +62,6 @@ yodaResponses = ("Schlafen du jetzt musst, sonst du morgen müde sein wirst.",
 # ------------------------------
 # ------------------------------
 
-if not discord.opus.is_loaded():
-  discord.opus.load_opus(name)
-
 @bot.event
 async def on_ready():
     print("------------Eingeloggt--------------")

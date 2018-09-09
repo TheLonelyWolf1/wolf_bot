@@ -77,7 +77,6 @@ async def on_ready():
         print('  ' + servers[x - 1].name)
     print("------------------------------------")
     bot.loop.create_task(status_task())
-    discord.opus.load_opus
     print(sys.platform)
 
 
@@ -604,3 +603,5 @@ async def info(ctx, ):
 
 token = os.environ.get("TOKEN")
 bot.run(token)
+if not discord.opus.is_loaded():
+    discord.opus.load_opus()

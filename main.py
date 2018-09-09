@@ -15,7 +15,6 @@ from ctypes.util import find_library
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
 bot_version = "0.1.6"
 
-discord.opus.load_opus
 
 players = {}
 # ------------------------------
@@ -82,6 +81,8 @@ async def on_ready():
     print(sys.platform)
 
 
+if not discord.opus.is_loaded():
+  discord.opus.load_opus(libopus0_1.1.2-1ubuntu1_amd64.deb)
 # ------------------------------
 # Youtube Music Bot
 # ------------------------------

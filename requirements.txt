@@ -1,4 +1,4 @@
 discord.py
 PyNaCl
 discord.py[voice]
-libopus.so
+libopus

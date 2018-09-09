@@ -311,30 +311,9 @@ async def commands(ctx, ):
     emb.add_field(name="kill:", value="Wenn soll ich töten?")
     emb.add_field(name="yoda:", value="Yoda-Weisheiten")
     emb.add_field(name="servers:", value="Wieviel Server benutzen mich")
-    emb.add_field(name="musicbot:", value="Meine Commands für den Musikbot")
     emb.set_footer(text="Missbraucht sie ja nicht!")
     await bot.say(embed=emb)
-# ------------------------------
-# MusicBot Command
-# ------------------------------
-# ------------------------------
 
-
-@bot.command(pass_context=True)
-async def musicbot(ctx, ):
-    executer = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Musicbot-Command executed! By:', executer)
-    emb = discord.Embed(color=discord.Color.dark_purple(), description="Meine Musik - Befehle:")
-    emb.add_field(name="join/summon:", value="Tritt dem Sprach-Kanal bei.")
-    emb.add_field(name="play:", value="Spielt einen Song.")
-    emb.add_field(name="volume:", value="Setzt die Lautstärke.")
-    emb.add_field(name="pause:", value="Pausiert einen Song.")
-    emb.add_field(name="resume:", value="Entpausiert einen Songs.")
-    emb.add_field(name="leave:", value="Beendet die Musik und verlässt den Kanal.")
-    emb.add_field(name="skip:", value="Startet einen Skip-Vote.")
-    emb.add_field(name="playing:", value="Zeigt das aktuell gespielte Lied")
-    emb.set_footer(text="Missbraucht sie ja nicht!")
-    await bot.say(embed=emb)
 # ------------------------------
 # Servers Command
 # ------------------------------

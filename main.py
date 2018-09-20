@@ -5,13 +5,12 @@ from discord.ext import commands
 import datetime
 import asyncio
 import random
-import traceback
 import time
 import sys
 import STATICS
-
+import Secret2
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
-bot_version = "0.1.6"
+bot_version = "0.1.4"
 
 
 players = {}
@@ -62,6 +61,7 @@ yodaResponses = ("Schlafen du jetzt musst, sonst du morgen müde sein wirst.",
 # ------------------------------
 # ------------------------------
 
+
 @bot.event
 async def on_ready():
     print("------------Eingeloggt--------------")
@@ -76,7 +76,8 @@ async def on_ready():
         print('  ' + servers[x - 1].name)
     print("------------------------------------")
     bot.loop.create_task(status_task())
-    print("Running on:" + sys.platform)
+    print("Running on: " + sys.platform)
+
 
 # ------------------------------
 # On_Message Output
@@ -120,7 +121,39 @@ async def status_task():
         await bot.change_presence(game=discord.Game(name='with nobody'))
         await asyncio.sleep(20)
         print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), "Restarting RP-Cycle...")
+# ------------------------------
+# Profile Status
+# ------------------------------
+# ------------------------------
 
+
+@bot.command(pass_context=True)
+async def profile(ctx, member: discord.Member = None):
+    if member == None:
+        author = ctx.message.author
+        avatar = ctx.message.author.avatar_url
+        joined = author.joined_at.__format__('%A, %d. %B %Y um %H:%M:%S')
+        toprole = ctx.message.author.top_role
+        nicker = ctx.message.author.nick
+        userID = ctx.message.author.id
+    else:
+        author = member.name
+        avatar = member.avatar_url
+        joined = member.joined_at.__format__('%A, %d. %B %Y um %H:%M:%S')
+        toprole = member.top_role
+        nicker = member.nick
+        userID = member.id
+    embed = discord.Embed(title="User Information", color=discord.Color.dark_grey(),)
+    embed.add_field(name="Username:", value=author)
+    embed.set_thumbnail(url=avatar)
+    embed.add_field(name='Nickname:', value=nicker, inline=True)
+    embed.add_field(name='User ID:', value=userID, inline=False)
+    embed.add_field(name="Höchste Role:", value=toprole, inline=False)
+    embed.add_field(name='Beigetreten am:', value=joined)
+    executor = ctx.message.author
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Profile-Command executed! By:', executor)
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Profile shown from:', author)
+    await bot.say(embed=embed)
 
 # ------------------------------
 # Kill Command
@@ -148,7 +181,6 @@ async def kill(ctx, *, member: discord.Member = None):
     else:
         choice = killResponses[random.randrange(0, len(killResponses))] % member.mention
         await bot.say(choice)
-
 
 # ------------------------------
 # Yoda Command
@@ -311,6 +343,7 @@ async def commands(ctx, ):
     emb.add_field(name="kill:", value="Wenn soll ich töten?")
     emb.add_field(name="yoda:", value="Yoda-Weisheiten")
     emb.add_field(name="servers:", value="Wieviel Server benutzen mich")
+    emb.add_field(name="profile:", value="User Infos")
     emb.set_footer(text="Missbraucht sie ja nicht!")
     await bot.say(embed=emb)
 
@@ -346,5 +379,6 @@ async def info(ctx, ):
     await bot.say(embed=embed)
 
 
-token = os.environ.get("TOKEN")
+token = Secret2.Token
+# für Heroku App!!!! os.environ.get("TOKEN")
 bot.run(token)

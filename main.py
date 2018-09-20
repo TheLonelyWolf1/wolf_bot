@@ -9,7 +9,7 @@ import time
 import sys
 import STATICS
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
-bot_version = "0.1.4"
+bot_version = "0.1.5"
 
 
 players = {}

@@ -8,7 +8,6 @@ import random
 import time
 import sys
 import STATICS
-import Secret2
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
 bot_version = "0.1.4"
 
@@ -379,6 +378,5 @@ async def info(ctx, ):
     await bot.say(embed=embed)
 
 
-token = Secret2.Token
-# für Heroku App!!!! os.environ.get("TOKEN")
+token = os.environ.get("TOKEN")
 bot.run(token)

@@ -5,11 +5,14 @@ from discord.ext import commands
 import datetime
 import asyncio
 import random
+from random import randint
 import time
 import sys
+import json
+
 import STATICS
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
-bot_version = "0.1.5"
+bot_version = "0.1.4"
 
 
 players = {}
@@ -89,6 +92,19 @@ async def on_message(message):
     user = message.author
     channel = message.channel
     msg = message.content
+    if os.path.isfile("users.json"):
+        with open('users.json', 'r') as f:
+            users = json.load(f)
+
+        await update_data(users, message.author)
+        await add_experience(users, message.author, randint(2, 10))
+        await level_up(users, message.author, message.channel)
+
+
+        with open('users.json', 'w') as f:
+            json.dump(users, f)
+    else:
+        return
     if message.author == bot.user:
         print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S] Bot antwortete:"), msg, "| Channel:", channel)
     else:
@@ -120,6 +136,50 @@ async def status_task():
         await bot.change_presence(game=discord.Game(name='with nobody'))
         await asyncio.sleep(20)
         print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), "Restarting RP-Cycle...")
+
+
+async def on_member_join(member):
+    if os.path.isfile("users.json"):
+        with open('users.json', 'r') as f:
+            users = json.load(f)
+        await update_data(users, member)
+        with open('users.json', 'w') as f:
+            json.dump(users, f)
+    else:
+        pass
+
+
+async def update_data(users, user):
+    if not user.id in users:
+        users[user.id] = {}
+        users[user.id]['experience'] = 0
+        users[user.id]['level'] = 1
+
+
+async def add_experience(users, user, exp):
+    users[user.id]['experience'] += exp
+
+
+async def level_up(users, user, channel):
+    experience = users[user.id]['experience']
+    lvl_start = users[user.id]['level']
+    lvl_end = int(experience ** (1/4))
+    if lvl_start < lvl_end:
+        await bot.send_message(channel, '{} ist auf Level **{}** aufgestiegen!'.format(user.mention, lvl_end))
+        users[user.id]['level'] = lvl_end
+
+
+@bot.command(pass_context=True)
+async def xp(ctx,):
+    user = ctx.message.author.id
+    if os.path.isfile("users.json"):
+        with open('users.json', 'r') as f:
+            users = json.load(f)
+        await bot.say("Du hast {} XP".format(users[user]['experience']))
+    else:
+        return 0
+
+
 # ------------------------------
 # Profile Status
 # ------------------------------
@@ -142,13 +202,22 @@ async def profile(ctx, member: discord.Member = None):
         toprole = member.top_role
         nicker = member.nick
         userID = member.id
+    if os.path.isfile("users.json"):
+        with open('users.json', 'r') as f:
+            users = json.load(f)
+        get_xp = "{}".format(users[userID]['experience'])
+        get_level = "{}".format(users[userID]['level'])
+    else:
+        return 0
     embed = discord.Embed(title="User Information", color=discord.Color.dark_grey(),)
     embed.add_field(name="Username:", value=author)
     embed.set_thumbnail(url=avatar)
     embed.add_field(name='Nickname:', value=nicker, inline=True)
     embed.add_field(name='User ID:', value=userID, inline=False)
     embed.add_field(name="Höchste Role:", value=toprole, inline=False)
-    embed.add_field(name='Beigetreten am:', value=joined)
+    embed.add_field(name='Beigetreten am:', value=joined, inline=False)
+    embed.add_field(name='Erfahrungspunkte:', value=get_xp, inline=False)
+    embed.add_field(name='Level:', value=get_level, inline=False)
     executor = ctx.message.author
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Profile-Command executed! By:', executor)
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Profile shown from:', author)

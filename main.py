@@ -10,8 +10,8 @@ import time
 import sys
 import json
 
-
 import STATICS
+
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
 bot_version = "0.1.4"
 
@@ -201,6 +201,34 @@ async def level_up(users, user, channel):
 
 
 # ------------------------------
+# Stats Command
+# ------------------------------
+# ------------------------------
+
+
+@bot.command(pass_context=True)
+async def stats(ctx, member: discord.Member = None):
+    if member is None:
+        userID = ctx.message.author.id
+    else:
+        userID = member.id
+    if os.path.isfile("users.json"):
+        with open('users.json', 'r') as f:
+            users = json.load(f)
+            get_level = "{}".format(users[userID]['level'])
+            wert = "{}".format(users[userID]['wert'])
+            embed = discord.Embed(color=discord.Color.dark_grey(),)
+            embed.add_field(name='WolfTaler:', value=wert, inline=True)
+            embed.add_field(name='Level:', value=get_level, inline=True)
+            await bot.say(embed=embed)
+    else:
+        return 0
+    executor = ctx.message.author
+    author = ctx.message.author
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Stats-Command executed! By:', executor)
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Stats shown from:', author)
+
+# ------------------------------
 # ErzInv Command
 # ------------------------------
 # ------------------------------
@@ -208,7 +236,7 @@ async def level_up(users, user, channel):
 
 @bot.command(pass_context=True)
 async def erzinv(ctx, member: discord.Member = None):
-    if member == None:
+    if member is None:
         userID = ctx.message.author.id
     else:
         userID = member.id
@@ -222,12 +250,16 @@ async def erzinv(ctx, member: discord.Member = None):
             gold = "{}".format(users[userID]['gold'])
             dias = "{}".format(users[userID]['diamanten'])
             wert = "{}".format(users[userID]['wert'])
+            get_level = "{}".format(users[userID]['level'])
+            wert = "{}".format(users[userID]['wert'])
             embed = discord.Embed(description="Erz Inventar",color=discord.Color.dark_grey(),)
             embed.add_field(name='Steine:', value=stone, inline=True)
             embed.add_field(name="Kupfererze:", value=kupfer, inline=True)
             embed.add_field(name='Eisenerze:', value=eisen, inline=True)
             embed.add_field(name='Golderze:', value=gold, inline=True)
             embed.add_field(name='Diamanten:', value=dias, inline=True)
+            embed.add_field(name='WolfTaler:', value=wert, inline=False)
+            embed.add_field(name='Level:', value=get_level, inline=True)
             await bot.say(embed=embed)
     else:
         return 0
@@ -304,13 +336,6 @@ async def profile(ctx, member: discord.Member = None):
         toprole = member.top_role
         nicker = member.nick
         userID = member.id
-    if os.path.isfile("users.json"):
-        with open('users.json', 'r') as f:
-            users = json.load(f)
-        get_level = "{}".format(users[userID]['level'])
-        wert = "{}".format(users[userID]['wert'])
-    else:
-        return 0
     embed = discord.Embed(title="User Information", color=discord.Color.dark_grey(),)
     embed.add_field(name="Username:", value=author)
     embed.set_thumbnail(url=avatar)
@@ -318,12 +343,11 @@ async def profile(ctx, member: discord.Member = None):
     embed.add_field(name='User ID:', value=userID, inline=False)
     embed.add_field(name="Höchste Role:", value=toprole, inline=False)
     embed.add_field(name='Beigetreten am:', value=joined, inline=False)
-    embed.add_field(name='WolfTaler:', value=wert, inline=True)
-    embed.add_field(name='Level:', value=get_level, inline=True)
     executor = ctx.message.author
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Profile-Command executed! By:', executor)
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Profile shown from:', author)
     await bot.say(embed=embed)
+
 
 # ------------------------------
 # Kill Command
@@ -351,6 +375,7 @@ async def kill(ctx, *, member: discord.Member = None):
     else:
         choice = killResponses[random.randrange(0, len(killResponses))] % member.mention
         await bot.say(choice)
+
 
 # ------------------------------
 # Yoda Command
@@ -446,6 +471,7 @@ async def kick(ctx, member: discord.Member = None):
 async def kick_error(ctx, error):
     await bot.say('User nicht gefunden :bangbang:')
 
+
 # ------------------------------
 # Ban Command
 # ------------------------------
@@ -475,6 +501,7 @@ async def ban(ctx, member: discord.Member = None):
 async def ban_error(ctx, error):
     await bot.say('User nicht gefunden :bangbang:')
 
+
 # ------------------------------
 # Ping Command
 # ------------------------------
@@ -502,18 +529,22 @@ async def commands(ctx, ):
     executer = ctx.message.author
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Commands-Command executed! By:', executer)
     emb = discord.Embed(color=discord.Color.dark_orange(), description="Meine Befehle:")
-    emb.add_field(name="ping:", value="Ping des Bots")
-    emb.add_field(name="info:", value="Info über die 218.")
-    emb.add_field(name="kick:", value=" Kickt ein User")
-    emb.add_field(name="ban:", value="Bannt ein User")
-    emb.add_field(name="wolfbot:", value="Info über mich")
-    emb.add_field(name="commands:", value="Meine Befehle")
-    emb.add_field(name="say:", value="Sende dein Text")
-    emb.add_field(name="vanish:", value="Lösche Nachricht(en)")
-    emb.add_field(name="kill:", value="Wenn soll ich töten?")
-    emb.add_field(name="yoda:", value="Yoda-Weisheiten")
-    emb.add_field(name="servers:", value="Wieviel Server benutzen mich")
-    emb.add_field(name="profile:", value="User Infos")
+    emb.add_field(name="ping:", value="Ping des Bots", inline=True)
+    emb.add_field(name="info:", value="Info über die 218.", inline=True)
+    emb.add_field(name="kick:", value=" Kickt ein User", inline=True)
+    emb.add_field(name="ban:", value="Bannt ein User", inline=True)
+    emb.add_field(name="wolfbot:", value="Info über mich", inline=True)
+    emb.add_field(name="commands:", value="Meine Befehle", inline=True)
+    emb.add_field(name="say:", value="Sende dein Text", inline=True)
+    emb.add_field(name="vanish:", value="Lösche Nachricht(en)", inline=True)
+    emb.add_field(name="kill:", value="Wenn soll ich töten?", inline=True)
+    emb.add_field(name="yoda:", value="Yoda-Weisheiten", inline=True)
+    emb.add_field(name="servers:", value="Wieviel Server benutzen mich", inline=True)
+    emb.add_field(name="profile:", value="User Infos", inline=True)
+    emb.add_field(name="stats:", value="Zeigt dem User sein Geld und Level", inline=True)
+    emb.add_field(name="mine:", value="Damit kannst du Erze und Taler verdienen[Alle 5min]", inline=True)
+    emb.add_field(name="erzinv:", value="Zeigt dem User sein Erz-Inventar", inline=True)
+
     emb.set_footer(text="Missbraucht sie ja nicht!")
     await bot.say(embed=emb)
 

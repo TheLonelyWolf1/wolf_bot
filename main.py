@@ -10,12 +10,16 @@ import time
 import sys
 import json
 
+
 import STATICS
 bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
 bot_version = "0.1.4"
 
+epoch = datetime.datetime.utcfromtimestamp(0)
 
 players = {}
+
+
 # ------------------------------
 # Responses
 # ------------------------------
@@ -58,6 +62,7 @@ yodaResponses = ("Schlafen du jetzt musst, sonst du morgen müde sein wirst.",
                  "Auf dein Herz hören du musst, um zu erfüllen deine Träume.",
                  "Du nicht grundlos töten darfst!")
 
+
 # ------------------------------
 # On_Ready Output
 # ------------------------------
@@ -92,24 +97,13 @@ async def on_message(message):
     user = message.author
     channel = message.channel
     msg = message.content
-    if os.path.isfile("users.json"):
-        with open('users.json', 'r') as f:
-            users = json.load(f)
-
-        await update_data(users, message.author)
-        await add_experience(users, message.author, randint(2, 10))
-        await level_up(users, message.author, message.channel)
-
-
-        with open('users.json', 'w') as f:
-            json.dump(users, f)
-    else:
-        return
     if message.author == bot.user:
         print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S] Bot antwortete:"), msg, "| Channel:", channel)
     else:
         print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), user, ":", msg, "| Channel:", channel)
         await bot.process_commands(message)
+
+
 # ------------------------------
 # Playing Status
 # ------------------------------
@@ -138,6 +132,30 @@ async def status_task():
         print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), "Restarting RP-Cycle...")
 
 
+# ------------------------------
+# Delete Inventory's Command
+# ------------------------------
+# ------------------------------
+
+
+@bot.command(pass_context=True)
+async def deletestats(ctx,):
+    id = ctx.message.author.id
+    if id == "261179915892686849":
+        f = open('users.json', 'w')
+        f.write('{}')
+        f.close()
+        await bot.say("Roger! Sämtliche Inventare wurden **gelöscht**")
+    else:
+        await bot.say("Nope!")
+
+
+# ------------------------------
+# Inventory Join-Script
+# ------------------------------
+# ------------------------------
+
+
 async def on_member_join(member):
     if os.path.isfile("users.json"):
         with open('users.json', 'r') as f:
@@ -149,19 +167,32 @@ async def on_member_join(member):
         pass
 
 
+# ------------------------------
+# Data Updating-Script
+# ------------------------------
+# ------------------------------
+
+
 async def update_data(users, user):
     if not user.id in users:
-        users[user.id] = {}
-        users[user.id]['experience'] = 0
-        users[user.id]['level'] = 1
+            users[user.id] = {}
+            users[user.id]['stone'] = 0
+            users[user.id]['kupfer'] = 0
+            users[user.id]['eisen'] = 0
+            users[user.id]['gold'] = 0
+            users[user.id]['diamanten'] = 0
+            users[user.id]['wert'] = 0
+            users[user.id]['level'] = 1
 
 
-async def add_experience(users, user, exp):
-    users[user.id]['experience'] += exp
+# ------------------------------
+# LevelUp-Script
+# ------------------------------
+# ------------------------------
 
 
 async def level_up(users, user, channel):
-    experience = users[user.id]['experience']
+    experience = users[user.id]['wert']
     lvl_start = users[user.id]['level']
     lvl_end = int(experience ** (1/4))
     if lvl_start < lvl_end:
@@ -169,15 +200,86 @@ async def level_up(users, user, channel):
         users[user.id]['level'] = lvl_end
 
 
+# ------------------------------
+# ErzInv Command
+# ------------------------------
+# ------------------------------
+
+
 @bot.command(pass_context=True)
-async def xp(ctx,):
-    user = ctx.message.author.id
+async def erzinv(ctx, member: discord.Member = None):
+    if member == None:
+        userID = ctx.message.author.id
+    else:
+        userID = member.id
     if os.path.isfile("users.json"):
         with open('users.json', 'r') as f:
             users = json.load(f)
-        await bot.say("Du hast {} XP".format(users[user]['experience']))
+            get_level = "{}".format(users[userID]['level'])
+            stone = "{}".format(users[userID]['stone'])
+            kupfer = "{}".format(users[userID]['kupfer'])
+            eisen = "{}".format(users[userID]['eisen'])
+            gold = "{}".format(users[userID]['gold'])
+            dias = "{}".format(users[userID]['diamanten'])
+            wert = "{}".format(users[userID]['wert'])
+            embed = discord.Embed(description="Erz Inventar",color=discord.Color.dark_grey(),)
+            embed.add_field(name='Steine:', value=stone, inline=True)
+            embed.add_field(name="Kupfererze:", value=kupfer, inline=True)
+            embed.add_field(name='Eisenerze:', value=eisen, inline=True)
+            embed.add_field(name='Golderze:', value=gold, inline=True)
+            embed.add_field(name='Diamanten:', value=dias, inline=True)
+            await bot.say(embed=embed)
     else:
         return 0
+    executor = ctx.message.author
+    author = ctx.message.author
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Erzinv-Command executed! By:', executor)
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'ErzInventar shown from:', author)
+
+
+# ------------------------------
+# Mine Command
+# ------------------------------
+# ------------------------------
+
+
+@bot.command(pass_context=True)
+@commands.cooldown(1, 300, commands.BucketType.user)
+async def mine(ctx):
+    message = ctx.message
+    user = ctx.message.author
+    if os.path.isfile("users.json"):
+        with open('users.json', 'r') as f:
+            users = json.load(f)
+        await update_data(users, message.author)
+
+        dias = randint(1, 5)
+        users[user.id]['diamanten'] += dias
+        stone = randint(6, 14)
+        users[user.id]['stone'] += stone
+        kupfer = randint(4, 11)
+        users[user.id]['kupfer'] += kupfer
+        eisen = randint(3, 9)
+        users[user.id]['eisen'] += eisen
+        gold = randint(2, 7)
+        users[user.id]['gold'] += gold
+        wert = randint(2,10)
+        users[user.id]['wert'] += wert
+        await level_up(users, message.author, message.channel)
+        with open('users.json', 'w') as f:
+            json.dump(users, f)
+        embed = discord.Embed(description="Deine Ausbeute:", color=discord.Color.dark_grey(),)
+        embed.add_field(name='Steine:', value=stone, inline=True)
+        embed.add_field(name="Kupfererze:", value=kupfer, inline=True)
+        embed.add_field(name='Eisenerze:', value=eisen, inline=True)
+        embed.add_field(name='Golderze:', value=gold, inline=True)
+        embed.add_field(name='Diamanten:', value=dias, inline=True)
+        embed.add_field(name='WolfTaler:', value=wert, inline=True)
+        await bot.say(embed=embed)
+        executor = ctx.message.author
+        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Mine-Command executed! By:', executor)
+    else:
+        return
 
 
 # ------------------------------
@@ -205,8 +307,8 @@ async def profile(ctx, member: discord.Member = None):
     if os.path.isfile("users.json"):
         with open('users.json', 'r') as f:
             users = json.load(f)
-        get_xp = "{}".format(users[userID]['experience'])
         get_level = "{}".format(users[userID]['level'])
+        wert = "{}".format(users[userID]['wert'])
     else:
         return 0
     embed = discord.Embed(title="User Information", color=discord.Color.dark_grey(),)
@@ -216,8 +318,8 @@ async def profile(ctx, member: discord.Member = None):
     embed.add_field(name='User ID:', value=userID, inline=False)
     embed.add_field(name="Höchste Role:", value=toprole, inline=False)
     embed.add_field(name='Beigetreten am:', value=joined, inline=False)
-    embed.add_field(name='Erfahrungspunkte:', value=get_xp, inline=False)
-    embed.add_field(name='Level:', value=get_level, inline=False)
+    embed.add_field(name='WolfTaler:', value=wert, inline=True)
+    embed.add_field(name='Level:', value=get_level, inline=True)
     executor = ctx.message.author
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Profile-Command executed! By:', executor)
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Profile shown from:', author)

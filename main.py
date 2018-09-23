@@ -10,9 +10,9 @@ import time
 import sys
 import json
 
-import STATICS
+import Config
 
-bot = commands.Bot(command_prefix=STATICS.PREFIX, description=" ")
+bot = commands.Bot(command_prefix=Config.PREFIX, description=" ")
 bot_version = "0.1.4"
 
 epoch = datetime.datetime.utcfromtimestamp(0)
@@ -78,9 +78,7 @@ async def on_ready():
     print("Discord Version: " + discord.__version__)
     print("Datum: " + datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S"))
     servers = list(bot.servers)
-    print("Connected on '" + str(len(bot.servers)) + "' servers:")
-    for x in range(len(servers)):
-        print('  ' + servers[x - 1].name)
+    print("Connected on '" + str(len(bot.servers)) + "' servers!")
     print("------------------------------------")
     bot.loop.create_task(status_task())
     print("Running on: " + sys.platform)
@@ -181,7 +179,7 @@ async def update_data(users, user):
             users[user.id]['eisen'] = 0
             users[user.id]['gold'] = 0
             users[user.id]['diamanten'] = 0
-            users[user.id]['wert'] = 0
+            users[user.id]['taler'] = 0
             users[user.id]['level'] = 1
 
 
@@ -192,12 +190,132 @@ async def update_data(users, user):
 
 
 async def level_up(users, user, channel):
-    experience = users[user.id]['wert']
+    taler = users[user.id]['taler']
     lvl_start = users[user.id]['level']
-    lvl_end = int(experience ** (1/4))
+    lvl_end = int(taler ** (1/4))
     if lvl_start < lvl_end:
         await bot.send_message(channel, '{} ist auf Level **{}** aufgestiegen!'.format(user.mention, lvl_end))
         users[user.id]['level'] = lvl_end
+
+
+# ------------------------------
+# Sell Command
+# ------------------------------
+# ------------------------------
+
+
+stoneprize = Config.stoneprize
+kupferprize = Config.kupferprize
+eisenprize = Config.eisenprize
+goldprize = Config.goldprize
+diamandprize = Config.diamandprize
+
+
+@bot.command(pass_context=True)
+async def erzverkauf(ctx):
+    embed = discord.Embed(description="Erz-Verkauf (*sell{Erz})",color=discord.Color.dark_grey(), )
+    embed.add_field(name='Erz', value="WolfTaler pro Stück", inline=True)
+    embed.add_field(name='Stein:', value=str(stoneprize), inline=True)
+    embed.add_field(name='Kupfererz:', value=str(kupferprize), inline=True)
+    embed.add_field(name='Eisenerz:', value=str(eisenprize), inline=True)
+    embed.add_field(name='Golderz:', value=str(goldprize), inline=True)
+    embed.add_field(name='Diamanten:', value=str(diamandprize), inline=True)
+    await bot.say(embed=embed)
+
+
+@bot.command(pass_context=True)
+async def sstein(ctx, count: str):
+    userID = ctx.message.author.id
+    if os.path.isfile("users.json"):
+        with open('users.json', 'r') as f:
+            users = json.load(f)
+            stone = "{}".format(users[userID]['stone'])
+            anzahl = int(count) * int(stoneprize)
+            if stone < count:
+                await bot.say("Du hast zuwenig Steine!")
+            else:
+                users[userID]['stone'] -= int(count)
+                users[userID]['taler'] += anzahl
+                await bot.say("Du hast {} Steine für {} WolfTaler verkauft!".format(count, anzahl))
+        with open('users.json', 'w') as f:
+            json.dump(users, f)
+
+# ------------------------------
+
+
+@bot.command(pass_context=True)
+async def skupfer(ctx, count: str):
+    userID = ctx.message.author.id
+    if os.path.isfile("users.json"):
+        with open('users.json', 'r') as f:
+            users = json.load(f)
+            stone = "{}".format(users[userID]['kupfer'])
+            anzahl = int(count) * int(kupferprize)
+            if stone < count:
+                await bot.say("Du hast zuwenig Kupfer!")
+            else:
+                users[userID]['kupfer'] -= int(count)
+                users[userID]['taler'] += anzahl
+                await bot.say("Du hast {} Kupfererz für {} WolfTaler verkauft!".format(count, anzahl))
+        with open('users.json', 'w') as f:
+            json.dump(users, f)
+# ------------------------------
+
+
+@bot.command(pass_context=True)
+async def seisen(ctx, count: str):
+    userID = ctx.message.author.id
+    if os.path.isfile("users.json"):
+        with open('users.json', 'r') as f:
+            users = json.load(f)
+            stone = "{}".format(users[userID]['eisen'])
+            anzahl = int(count) * int(eisenprize)
+            if stone < count:
+                await bot.say("Du hast zuwenig Eisenerz!")
+            else:
+                users[userID]['eisen'] -= int(count)
+                users[userID]['taler'] += anzahl
+                await bot.say("Du hast {} Eisenerz für {} WolfTaler verkauft!".format(count, anzahl))
+        with open('users.json', 'w') as f:
+            json.dump(users, f)
+# ------------------------------
+
+
+@bot.command(pass_context=True)
+async def sgold(ctx, count: str):
+    userID = ctx.message.author.id
+    if os.path.isfile("users.json"):
+        with open('users.json', 'r') as f:
+            users = json.load(f)
+            stone = "{}".format(users[userID]['gold'])
+            anzahl = int(count) * int(goldprize)
+            if stone < count:
+                await bot.say("Du hast zuwenig Golderz!")
+            else:
+                users[userID]['gold'] -= int(count)
+                users[userID]['taler'] += anzahl
+                await bot.say("Du hast {} Golderz für {} WolfTaler verkauft!".format(count, anzahl))
+        with open('users.json', 'w') as f:
+            json.dump(users, f)
+# ------------------------------
+
+
+@bot.command(pass_context=True)
+async def sdia(ctx, count: str):
+    userID = ctx.message.author.id
+    if os.path.isfile("users.json"):
+        with open('users.json', 'r') as f:
+            users = json.load(f)
+            stone = "{}".format(users[userID]['diamanten'])
+            anzahl = int(count) * int(diamandprize)
+            if stone < count:
+                await bot.say("Du hast zuwenig Diamanten!")
+            else:
+                users[userID]['diamanten'] -= int(count)
+                users[userID]['taler'] += anzahl
+                await bot.say("Du hast {} Diamanten für {} WolfTaler verkauft!".format(count, anzahl))
+        with open('users.json', 'w') as f:
+            json.dump(users, f)
 
 
 # ------------------------------
@@ -216,7 +334,7 @@ async def stats(ctx, member: discord.Member = None):
         with open('users.json', 'r') as f:
             users = json.load(f)
             get_level = "{}".format(users[userID]['level'])
-            wert = "{}".format(users[userID]['wert'])
+            wert = "{}".format(users[userID]['taler'])
             embed = discord.Embed(color=discord.Color.dark_grey(),)
             embed.add_field(name='WolfTaler:', value=wert, inline=True)
             embed.add_field(name='Level:', value=get_level, inline=True)
@@ -249,17 +367,13 @@ async def erzinv(ctx, member: discord.Member = None):
             eisen = "{}".format(users[userID]['eisen'])
             gold = "{}".format(users[userID]['gold'])
             dias = "{}".format(users[userID]['diamanten'])
-            wert = "{}".format(users[userID]['wert'])
-            get_level = "{}".format(users[userID]['level'])
-            wert = "{}".format(users[userID]['wert'])
+            wert = "{}".format(users[userID]['taler'])
             embed = discord.Embed(description="Erz Inventar",color=discord.Color.dark_grey(),)
             embed.add_field(name='Steine:', value=stone, inline=True)
             embed.add_field(name="Kupfererze:", value=kupfer, inline=True)
             embed.add_field(name='Eisenerze:', value=eisen, inline=True)
             embed.add_field(name='Golderze:', value=gold, inline=True)
             embed.add_field(name='Diamanten:', value=dias, inline=True)
-            embed.add_field(name='WolfTaler:', value=wert, inline=False)
-            embed.add_field(name='Level:', value=get_level, inline=True)
             await bot.say(embed=embed)
     else:
         return 0
@@ -276,7 +390,7 @@ async def erzinv(ctx, member: discord.Member = None):
 
 
 @bot.command(pass_context=True)
-@commands.cooldown(1, 300, commands.BucketType.user)
+@commands.cooldown(1, Config.Cooldown, commands.BucketType.user)
 async def mine(ctx):
     message = ctx.message
     user = ctx.message.author
@@ -295,8 +409,6 @@ async def mine(ctx):
         users[user.id]['eisen'] += eisen
         gold = randint(2, 7)
         users[user.id]['gold'] += gold
-        wert = randint(2,10)
-        users[user.id]['wert'] += wert
         await level_up(users, message.author, message.channel)
         with open('users.json', 'w') as f:
             json.dump(users, f)
@@ -306,7 +418,6 @@ async def mine(ctx):
         embed.add_field(name='Eisenerze:', value=eisen, inline=True)
         embed.add_field(name='Golderze:', value=gold, inline=True)
         embed.add_field(name='Diamanten:', value=dias, inline=True)
-        embed.add_field(name='WolfTaler:', value=wert, inline=True)
         await bot.say(embed=embed)
         executor = ctx.message.author
         print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Mine-Command executed! By:', executor)
@@ -518,6 +629,7 @@ async def ping(ctx):
     await bot.say(content=f"Bot läuft bei: `{int(ping)}ms`")
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), f'Ping {int(ping)}ms')
 
+
 # ------------------------------
 # Commands Command
 # ------------------------------
@@ -544,9 +656,12 @@ async def commands(ctx, ):
     emb.add_field(name="stats:", value="Zeigt dem User sein Geld und Level", inline=True)
     emb.add_field(name="mine:", value="Damit kannst du Erze und Taler verdienen[Alle 5min]", inline=True)
     emb.add_field(name="erzinv:", value="Zeigt dem User sein Erz-Inventar", inline=True)
+    emb.add_field(name="erzverkauf:", value="Zeigt die aktuellen Preise", inline=True)
+    emb.add_field(name="sell(erz) Anzahl:", value="Verkaufe dein Erz", inline=True)
 
     emb.set_footer(text="Missbraucht sie ja nicht!")
     await bot.say(embed=emb)
+
 
 # ------------------------------
 # Servers Command

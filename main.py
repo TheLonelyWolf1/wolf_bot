@@ -13,7 +13,7 @@ import json
 import Config
 
 bot = commands.Bot(command_prefix=Config.PREFIX, description=" ")
-bot_version = "0.1.4"
+bot_version = Config.Version
 
 epoch = datetime.datetime.utcfromtimestamp(0)
 

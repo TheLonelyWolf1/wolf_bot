@@ -95,10 +95,11 @@ async def on_message(message):
     user = message.author
     channel = message.channel
     msg = message.content
+    server = message.author.server
     if message.author == bot.user:
-        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S] Bot antwortete:"), msg, "| Channel:", channel)
+        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S] S:{}|C:{}| Bot antwortete:".format(server,channel)), msg)
     else:
-        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), user, ":", msg, "| Channel:", channel)
+        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S] S:{}|C:{}|".format(server,channel)), user, ":", msg)
         await bot.process_commands(message)
 
 
@@ -129,7 +130,6 @@ async def status_task():
         await asyncio.sleep(2)
         await bot.change_presence(game=discord.Game(name='Loading ...'))
         await asyncio.sleep(2)
-        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), "Restarting RP-Cycle...")
 
 
 # ------------------------------

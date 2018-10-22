@@ -133,7 +133,23 @@ async def status_task():
 
 
 # ------------------------------
-# Profile Status
+# Choose Command
+# ------------------------------
+# ------------------------------
+@bot.command(pass_context=True)
+async def choose(*choices : str):
+    await  bot.say("Choosing...")
+    await asyncio.sleep(2)
+    await  bot.say("Not easy to choose...")
+    await asyncio.sleep(2)
+    Choosing = random.choice(choices)
+    embed = discord.Embed(color=discord.Color.dark_grey(), )
+    embed.add_field(name="Der Auserwählte:", value=Choosing)
+    embed.add_field(name="Wählbar war(en):", value=choices, inline=False)
+    await bot.say(embed=embed)
+
+# ------------------------------
+# Profile Command
 # ------------------------------
 # ------------------------------
 
@@ -360,12 +376,7 @@ async def commands(ctx, ):
     emb.add_field(name="yoda:", value="Yoda-Weisheiten", inline=True)
     emb.add_field(name="servers:", value="Wieviel Server benutzen mich", inline=True)
     emb.add_field(name="profile:", value="User Infos", inline=True)
-    emb.add_field(name="stats:", value="Zeigt dem User sein Geld und Level", inline=True)
-    emb.add_field(name="mine:", value="Damit kannst du Erze und Taler verdienen[Alle 5min]", inline=True)
-    emb.add_field(name="erzinv:", value="Zeigt dem User sein Erz-Inventar", inline=True)
-    emb.add_field(name="erzverkauf:", value="Zeigt die aktuellen Preise", inline=True)
-    emb.add_field(name="sell(erz) Anzahl:", value="Verkaufe dein Erz", inline=True)
-
+    emb.add_field(name="choose:", value="Wählt aus verschiedenen Begriffen", inline=True)
     emb.set_footer(text="Missbraucht sie ja nicht!")
     await bot.say(embed=emb)
 

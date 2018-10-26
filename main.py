@@ -12,7 +12,6 @@ import sys
 import json
 
 import Config
-import SECRETS
 
 bot = commands.Bot(command_prefix=Config.PREFIX, description=" ")
 bot_version = Config.Version
@@ -421,6 +420,5 @@ async def info(ctx, ):
     await bot.say(embed=embed)
 
 
-token = SECRETS.TOKEN
-    #os.environ.get("TOKEN")
+token = os.environ.get("TOKEN")
 bot.run(token)

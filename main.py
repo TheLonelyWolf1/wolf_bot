@@ -1,3 +1,4 @@
+import aiohttp
 import os
 import discord
 import discord.ext
@@ -11,6 +12,7 @@ import sys
 import json
 
 import Config
+import SECRETS
 
 bot = commands.Bot(command_prefix=Config.PREFIX, description=" ")
 bot_version = Config.Version
@@ -136,18 +138,24 @@ async def status_task():
 # Choose Command
 # ------------------------------
 # ------------------------------
-@bot.command(pass_context=True)
+@bot.command()
 async def choose(*choices : str):
-    await  bot.say("Choosing...")
-    await asyncio.sleep(2)
-    await  bot.say("Not easy to choose...")
-    await asyncio.sleep(2)
-    Choosing = random.choice(choices)
-    embed = discord.Embed(color=discord.Color.dark_grey(), )
-    embed.add_field(name="Der Auserwählte:", value=Choosing)
-    embed.add_field(name="Wählbar war(en):", value=choices, inline=False)
-    await bot.say(embed=embed)
+    await bot.say(random.choice(choices))
 
+# ------------------------------
+# Bitcoin Command
+# ------------------------------
+# ------------------------------
+
+
+@bot.command()
+async def bitcoin():
+    url = 'https://api.coindesk.com/v1/bpi/currentprice/BTC.json'
+    async with aiohttp.ClientSession() as session:  # Async HTTP request
+        raw_response = await session.get(url)
+        response = await raw_response.text()
+        response = json.loads(response)
+        await bot.say("Derzeitiger Wert des Bitcoins: $" + response['bpi']['USD']['rate'])
 # ------------------------------
 # Profile Command
 # ------------------------------
@@ -413,5 +421,6 @@ async def info(ctx, ):
     await bot.say(embed=embed)
 
 
-token = os.environ.get("TOKEN")
+token = SECRETS.TOKEN
+    #os.environ.get("TOKEN")
 bot.run(token)

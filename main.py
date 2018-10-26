@@ -111,25 +111,11 @@ async def on_message(message):
 
 
 async def status_task():
+    await asyncio.sleep(2)
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), "RP-Cycle is starting!")
     while True:
-        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), "RP-Cycle is working!")
-        await bot.change_presence(game=discord.Game(name='Loading .'))
-        await asyncio.sleep(2)
-        await bot.change_presence(game=discord.Game(name='Loading ..'))
-        await asyncio.sleep(2)
-        await bot.change_presence(game=discord.Game(name='Loading ...'))
-        await asyncio.sleep(2)
-        await bot.change_presence(game=discord.Game(name='Loading .'))
-        await asyncio.sleep(2)
-        await bot.change_presence(game=discord.Game(name='Loading ..'))
-        await asyncio.sleep(2)
-        await bot.change_presence(game=discord.Game(name='Loading ...'))
-        await asyncio.sleep(2)
-        await bot.change_presence(game=discord.Game(name='Loading .'))
-        await asyncio.sleep(2)
-        await bot.change_presence(game=discord.Game(name='Loading ..'))
-        await asyncio.sleep(2)
-        await bot.change_presence(game=discord.Game(name='Loading ...'))
+        servers = list(bot.servers)
+        await bot.change_presence(game=discord.Game(name=("Running on: [" + str(len(bot.servers)) + "] Server!")))
         await asyncio.sleep(2)
 
 
@@ -137,6 +123,19 @@ async def status_task():
 # Choose Command
 # ------------------------------
 # ------------------------------
+
+
+@bot.command()
+async def discordversion():
+    await bot.say("Discord Version: " + discord.__version__)
+
+
+# ------------------------------
+# Choose Command
+# ------------------------------
+# ------------------------------
+
+
 @bot.command()
 async def choose(*choices : str):
     await bot.say(random.choice(choices))
@@ -384,6 +383,8 @@ async def commands(ctx, ):
     emb.add_field(name="servers:", value="Wieviel Server benutzen mich", inline=True)
     emb.add_field(name="profile:", value="User Infos", inline=True)
     emb.add_field(name="choose:", value="Wählt aus verschiedenen Begriffen", inline=True)
+    emb.add_field(name="bitcoin:", value="Zeigt den aktuellen Bitcoin Wert", inline=True)
+    emb.add_field(name="discordversion:", value="Zeigt die aktuelle Discord Version", inline=True)
     emb.set_footer(text="Missbraucht sie ja nicht!")
     await bot.say(embed=emb)
 

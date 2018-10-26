@@ -138,7 +138,11 @@ async def discordversion():
 
 @bot.command()
 async def choose(*choices : str):
-    await bot.say(random.choice(choices))
+    Choosing = random.choice(choices)
+    embed = discord.Embed(color=discord.Color.dark_grey())
+    embed.add_field(name="Ich habe folgendes gewählt:", value=Choosing)
+    embed.add_field(name="Zur Auswahl standen:", value=choices, inline=False)
+    await bot.say(embed=embed)
 
 # ------------------------------
 # Bitcoin Command

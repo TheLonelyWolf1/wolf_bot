@@ -98,9 +98,9 @@ async def on_message(message):
     msg = message.content
     server = message.author.server
     if message.author == bot.user:
-        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S] S:{}|C:{}| Bot antwortete:".format(server,channel)), msg)
+        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S] [MessageReceive] S:{}|C:{}| Bot antwortete:".format(server,channel)), msg)
     else:
-        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S] S:{}|C:{}|".format(server,channel)), user, ":", msg)
+        print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S] [MessageReceive] S:{}|C:{}|".format(server,channel)), user, ":", msg)
         await bot.process_commands(message)
 
 
@@ -112,7 +112,7 @@ async def on_message(message):
 
 async def status_task():
     await asyncio.sleep(2)
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), "RP-Cycle is starting!")
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), "[RP-Cycle] Starting!")
     while True:
         servers = list(bot.servers)
         await bot.change_presence(game=discord.Game(name=("Running on: [" + str(len(bot.servers)) + "] Server!")))
@@ -127,6 +127,7 @@ async def status_task():
 
 @bot.command()
 async def discordversion():
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), '[Discordversion-Command]')
     await bot.say("Discord Version: " + discord.__version__)
 
 
@@ -142,6 +143,7 @@ async def choose(*choices : str):
     embed = discord.Embed(color=discord.Color.dark_grey())
     embed.add_field(name="Ich habe folgendes gewählt:", value=Choosing)
     embed.add_field(name="Zur Auswahl standen:", value=choices, inline=False)
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), '[Choose-Command]')
     await bot.say(embed=embed)
 
 # ------------------------------
@@ -188,7 +190,7 @@ async def profile(ctx, member: discord.Member = None):
     embed.add_field(name="Höchste Role:", value=toprole, inline=False)
     embed.add_field(name='Beigetreten am:', value=joined, inline=False)
     executor = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Profile-Command executed! By:', executor)
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), '[Profile-Command] By:', executor)
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Profile shown from:', author)
     await bot.say(embed=embed)
 
@@ -202,7 +204,7 @@ async def profile(ctx, member: discord.Member = None):
 @bot.command(pass_context=True)
 async def kill(ctx, *, member: discord.Member = None):
     executor = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Kill-Command executed! By:', executor)
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), '[Kill-Command] By:', executor)
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Versuchte Mord von: ', member)
     if member is None:
         await bot.say("Wenn ich das Universum töte bleibt nichts mehr übrig und das möchte ich nicht!")
@@ -230,7 +232,7 @@ async def kill(ctx, *, member: discord.Member = None):
 @bot.command(pass_context=True)
 async def yoda(ctx, *, member: discord.Member = None):
     executor = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Yoda-Command executed! By:', executor)
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), '[Yoda-Command] By:', executor)
     choice = yodaResponses[random.randrange(0, len(yodaResponses))]
     await bot.say(embed=discord.Embed(color=discord.Color.dark_green(), description=choice))
 
@@ -245,7 +247,7 @@ async def yoda(ctx, *, member: discord.Member = None):
 @commands.bot_has_permissions(mention_everyone=True)
 async def say(*, content):
     await bot.say(content)
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Say-Command executed!')
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), '[Say-Command]')
 
 
 # ------------------------------
@@ -257,7 +259,7 @@ async def say(*, content):
 @bot.command(pass_context=True)
 async def wolfbot(ctx):
     executor = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Wolfbot-Command executed! By:', executor)
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), '[Wolfbot-Command] By:', executor)
     emb = discord.Embed(color=discord.Color.dark_orange(), description=bot.user.name)
     emb.add_field(name="Name:", value=bot.user.name)
     emb.add_field(name="Version:", value=bot_version)
@@ -284,7 +286,7 @@ async def vanish(ctx, number):
         mgs.append(x)
     await bot.delete_messages(mgs)
     executer = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Vanish-Command executed! By:', executer)
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), '[Vanish-Command] By:', executer)
 
 
 # ------------------------------
@@ -298,7 +300,7 @@ async def vanish(ctx, number):
 @commands.bot_has_permissions(kick_members=True)
 async def kick(ctx, member: discord.Member = None):
     kicker = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Kick-Command executed! By:', kicker, '| Kicked:',
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), '[Kick-Command] By:', kicker, '| Kicked:',
           member)
     if member is None:
         await bot.say(ctx.message.author.mention + ": Schöner Scherz!")
@@ -328,7 +330,7 @@ async def kick_error(ctx, error):
 async def ban(ctx, member: discord.Member = None):
     banner = ctx.message.author
     members = ctx.message.server.members
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Bann-Command executed! By:', banner, '| Banned:',
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), '[Bann-Command] By:', banner, '| Banned:',
           member)
     if member is None:
         await bot.say(ctx.message.author.mention + ": Schöner Scherz!")
@@ -355,7 +357,7 @@ async def ban_error(ctx, error):
 @bot.command(pass_context=True)
 async def ping(ctx):
     executer = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Ping-Command executed! By:', executer)
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), '[Ping-Command] By:', executer)
     before = time.monotonic()
     await bot.delete_message(ctx.message)
     ping = (time.monotonic() - before) * 1000
@@ -372,7 +374,7 @@ async def ping(ctx):
 @bot.command(pass_context=True)
 async def commands(ctx, ):
     executer = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Commands-Command executed! By:', executer)
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), '[Commands-Command] By:', executer)
     emb = discord.Embed(color=discord.Color.dark_orange(), description="Meine Befehle:")
     emb.add_field(name="ping:", value="Ping des Bots", inline=True)
     emb.add_field(name="info:", value="Info über die 218.", inline=True)
@@ -402,7 +404,7 @@ async def commands(ctx, ):
 @bot.command(pass_context=True)
 async def servers(ctx):
     executer = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Servers-Command executed! By:', executer)
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), '[Servers-Command] By:', executer)
     servers = list(bot.servers)
     await bot.say("[" + str(len(bot.servers)) + "] Server nutzen mich aktuell!")
 
@@ -416,7 +418,7 @@ async def servers(ctx):
 @bot.command(pass_context=True)
 async def info(ctx, ):
     executer = ctx.message.author
-    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), 'Info-Command executed! By:', executer)
+    print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), '[Info-Command] By:', executer)
     embed = discord.Embed(title="Division Information", color=discord.Color.dark_green(),
                           description="Infos über die 218.Gaming Division")
     embed.add_field(name="Owner:", value="TheLonelyWolf")

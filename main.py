@@ -80,6 +80,7 @@ async def on_ready():
     print("Datum: " + datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S"))
     servers = list(bot.servers)
     print("Connected on '" + str(len(bot.servers)) + "' servers!")
+    print("Watching '" + str(len(set(bot.get_all_members()))) + "' players!")
     print("------------------------------------")
     bot.loop.create_task(status_task())
     print("Running on: " + sys.platform)
@@ -114,9 +115,10 @@ async def status_task():
     await asyncio.sleep(2)
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), "[RP-Cycle] Starting!")
     while True:
-        servers = list(bot.servers)
         await bot.change_presence(game=discord.Game(name=("Running on: [" + str(len(bot.servers)) + "] Server!")))
-        await asyncio.sleep(2)
+        await asyncio.sleep(10)
+        await bot.change_presence(game=discord.Game(name=("Overwatching [" + str(len(set(bot.get_all_members()))) + "] Players!")))
+        await asyncio.sleep(10)
 
 
 # ------------------------------
@@ -406,7 +408,7 @@ async def servers(ctx):
     executer = ctx.message.author
     print(datetime.datetime.now().strftime("[%d-%m-%y|%H:%M:%S]"), '[Servers-Command] By:', executer)
     servers = list(bot.servers)
-    await bot.say("[" + str(len(bot.servers)) + "] Server nutzen mich aktuell!")
+    await bot.say("[" + str(len(bot.servers)) + "] Server mit [" + str(len(set(bot.get_all_members()))) + "] Spieler nutzen mich aktuell!")
 
 
 # ------------------------------
